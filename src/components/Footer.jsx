@@ -37,8 +37,6 @@ export default function Footer() {
               <Link to="/men">Men</Link>
               <br />
               <Link to="/women">Women</Link>
-              <br />
-              <Link to="/kids">Kids</Link>
             </p>
           </div>
           <div>

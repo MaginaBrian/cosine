@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import Slider from "../components/Slider";
+import ProductCard from "../components/ProductCard";
 import { collectionsCatalog } from "../data/images";
 
 const TABS = [
@@ -44,16 +45,7 @@ export default function CollectionsPage() {
 
         <Slider ref={sliderRef} className="collections__slider">
           {collectionsCatalog.map((item) => (
-            <figure className="collection-card" key={item.id}>
-              <div className="collection-card__frame">
-                <img src={item.img} alt={item.title} draggable="false" />
-              </div>
-              <figcaption>
-                <span className="collection-card__brand">Cosine Made</span>
-                <span className="collection-card__title">{item.title}</span>
-                <span className="collection-card__price">{item.price}</span>
-              </figcaption>
-            </figure>
+            <ProductCard item={item} key={item.id} />
           ))}
         </Slider>
       </section>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { MEN_TYPES, WOMEN_TYPES, KIDS_TYPES } from "../data/images";
+import { MEN_TYPES, WOMEN_TYPES } from "../data/images";
+import Emblem from "./Emblem";
 
 const PRIMARY_LEFT = [
   { label: "Featured", to: "/featured" },
@@ -16,7 +17,6 @@ const PRIMARY_RIGHT = [
 const SECONDARY = [
   { label: "Men", to: "/men", menu: MEN_TYPES, menuBase: "/men" },
   { label: "Women", to: "/women", menu: WOMEN_TYPES, menuBase: "/women" },
-  { label: "Kids", to: "/kids", menu: KIDS_TYPES, menuBase: "/kids" },
 ];
 
 const ALL_LINKS = [...PRIMARY_LEFT, ...SECONDARY, ...PRIMARY_RIGHT];
@@ -69,7 +69,8 @@ export default function Navbar() {
         </nav>
 
         <Link to="/" className="nav__wordmark">
-          Cosine&nbsp;Made
+          <Emblem size={30} spin={false} />
+          <span>Cosine&nbsp;Made</span>
         </Link>
 
         <nav className="nav__links nav__links--right">
