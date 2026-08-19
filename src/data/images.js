@@ -1,10 +1,12 @@
+import heroLandscape from "../assets/hero-landscape.jpg";
+
 // Free-to-use editorial / fashion imagery (Unsplash CDN, hotlinked).
 // Swap any of these for real Cosine Made photography/video later —
 // every component below is built to take either an <img> or <video> source.
 const u = (id, w = 1400) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=80`;
 
-export const heroImage = u("photo-1490481651871-ab68de25d43d", 2000);
+export const heroImage = heroLandscape;
 
 // Large chooser panels on the homepage — link straight to /men and /women.
 export const menPanelImage = u("photo-1441986300917-64674bd600d8", 1400);
@@ -12,8 +14,8 @@ export const womenPanelImage = u("photo-1490578474895-699cd4e2cf59", 1400);
 
 // The categories that populate each nav dropdown. "type" on a catalog item
 // below must match one of these strings to show up under that filter.
-export const MEN_TYPES = ["Outerwear", "Tops", "Bottoms", "Knitwear"];
-export const WOMEN_TYPES = ["Knitwear", "Denim", "Dresses", "Outerwear", "Bottoms"];
+export const MEN_TYPES = ["Outerwear", "Tops", "Bottoms"];
+export const WOMEN_TYPES = ["Outerwear", "Tops", "Bottoms"];
 
 // Featured page — a small curated pull from across the full catalog.
 export const featuredIds = ["m1", "w3", "m6", "w1", "m2", "w5"];
@@ -68,7 +70,7 @@ export const collectionsCatalog = [
   {
     id: "m6",
     category: "men",
-    type: "Knitwear",
+    type: "Tops",
     title: "Merino Crewneck",
     price: "KSh 11,400",
     img: u("photo-1516257984-b1b4d707412e"),
@@ -78,7 +80,7 @@ export const collectionsCatalog = [
   {
     id: "w1",
     category: "women",
-    type: "Knitwear",
+    type: "Outerwear",
     title: "Cropped Knit Cardigan",
     price: "KSh 15,600",
     img: u("photo-1483985988355-763728e1935b"),
@@ -87,7 +89,7 @@ export const collectionsCatalog = [
   {
     id: "w2",
     category: "women",
-    type: "Denim",
+    type: "Bottoms",
     title: "Straight Leg Denim",
     price: "KSh 13,200",
     img: u("photo-1509631179647-0177331693ae"),
@@ -96,7 +98,7 @@ export const collectionsCatalog = [
   {
     id: "w3",
     category: "women",
-    type: "Dresses",
+    type: "Tops",
     title: "Silk Slip Dress",
     price: "KSh 18,400",
     img: u("photo-1490114538077-0a7f8cb49891"),

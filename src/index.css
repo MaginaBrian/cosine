@@ -186,8 +186,8 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
 .nav__dropdown {
   position: absolute;
   top: calc(100% + 14px);
-  left: 50%;
-  transform: translateX(-50%) translateY(-6px);
+  left: 0;
+  transform: translateY(-6px);
   min-width: 190px;
   background: var(--pearl);
   border: 1px solid rgba(0,0,0,0.1);
@@ -203,7 +203,7 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
 .nav__dropdown.is-open {
   opacity: 1;
   pointer-events: auto;
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
 }
 .nav__dropdown a {
   padding: 9px 22px;
