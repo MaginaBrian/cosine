@@ -312,31 +312,7 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   .hero__foot .emblem { grid-column: 1 / -1; justify-self: start; }
 }
 
-/* ---------- Marquee ---------- */
-.marquee {
-  background: var(--onyx);
-  color: var(--pearl);
-  overflow: hidden;
-  padding: 16px 0;
-  white-space: nowrap;
-}
-.marquee__track {
-  display: flex;
-  width: max-content;
-  animation: marquee 34s linear infinite;
-}
-.marquee__track span {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  padding-right: 4px;
-}
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
+
 
 /* ---------- Section head ---------- */
 .section-head {
