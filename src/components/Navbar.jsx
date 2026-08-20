@@ -1,27 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { MEN_TYPES, WOMEN_TYPES } from "../data/images";
 import Emblem from "./Emblem";
 
-const PRIMARY_LEFT = [
-  { label: "Featured", to: "/featured" },
+const LEFT = [
   { label: "Collections", to: "/collections" },
-];
-
-const PRIMARY_RIGHT = [
-  { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
-];
-
-// Secondary row — sits left-aligned under Featured / Collections.
-const SECONDARY = [
   { label: "Men", to: "/men", menu: MEN_TYPES, menuBase: "/men" },
   { label: "Women", to: "/women", menu: WOMEN_TYPES, menuBase: "/women" },
 ];
 
-const ALL_LINKS = [...PRIMARY_LEFT, ...SECONDARY, ...PRIMARY_RIGHT];
+const RIGHT = [
+  { label: "Search" },
+  { label: "About", to: "/about" },
+  { label: "Contact", to: "/contact" },
+];
 
-function NavDropdown({ item, openMenu, setOpenMenu }) {
+const ALL_LINKS = [...LEFT, ...RIGHT.filter((item) => item.to)];
+
+function NavItem({ item, openMenu, setOpenMenu }) {
+  if (!item.to) {
+    // Decorative, non-routed item (e.g. Search).
+    return <span className="nav__static">{item.label}</span>;
+  }
+
   return (
     <div
       className="nav__item"
@@ -47,24 +48,15 @@ function NavDropdown({ item, openMenu, setOpenMenu }) {
 }
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header className={`nav ${scrolled ? "nav--scrolled" : ""}`}>
+    <header className="nav">
       <div className="nav__row nav__row--primary">
         <nav className="nav__links nav__links--left">
-          {PRIMARY_LEFT.map((item) => (
-            <NavLink key={item.to} to={item.to}>
-              {item.label}
-            </NavLink>
+          {LEFT.map((item) => (
+            <NavItem key={item.to} item={item} openMenu={openMenu} setOpenMenu={setOpenMenu} />
           ))}
         </nav>
 
@@ -74,10 +66,8 @@ export default function Navbar() {
         </Link>
 
         <nav className="nav__links nav__links--right">
-          {PRIMARY_RIGHT.map((item) => (
-            <NavLink key={item.to} to={item.to}>
-              {item.label}
-            </NavLink>
+          {RIGHT.map((item) => (
+            <NavItem key={item.to || item.label} item={item} openMenu={openMenu} setOpenMenu={setOpenMenu} />
           ))}
         </nav>
 
@@ -89,14 +79,6 @@ export default function Navbar() {
           <span />
           <span />
         </button>
-      </div>
-
-      <div className="nav__row nav__row--secondary">
-        <nav className="nav__links nav__links--secondary">
-          {SECONDARY.map((item) => (
-            <NavDropdown key={item.to} item={item} openMenu={openMenu} setOpenMenu={setOpenMenu} />
-          ))}
-        </nav>
       </div>
 
       <div className={`nav__mobile ${open ? "is-open" : ""}`}>

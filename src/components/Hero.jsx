@@ -9,11 +9,8 @@ export default function Hero() {
       </div>
 
       <div className="hero__grid">
-        <h1 className="hero__headline">
-          TIMELESS
-          <br />
-          BY DESIGN
-        </h1>
+        <h1 className="hero__headline">AXIS</h1>
+        <p className="hero__subline">Made by hand. Never restocked.</p>
       </div>
     </section>
   );
