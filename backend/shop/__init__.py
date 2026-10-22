@@ -4,6 +4,7 @@ from flask import Flask
 
 from shop.cart import cart_bp
 from shop.catalog import catalog_bp
+from shop.checkout import checkout_bp
 
 
 def create_app():
@@ -15,4 +16,5 @@ def create_app():
     )
     app.register_blueprint(catalog_bp, url_prefix="/api")
     app.register_blueprint(cart_bp, url_prefix="/api")
+    app.register_blueprint(checkout_bp, url_prefix="/api")
     return app

@@ -45,6 +45,9 @@ export default function BagPage() {
               <strong>{cart.subtotalLabel}</strong>
             </p>
             <p className="bag__note">Shipping is calculated when you check out. All sales are final.</p>
+            <Link to="/checkout" className="bag__checkout">
+              Checkout
+            </Link>
           </aside>
         </div>
       )}

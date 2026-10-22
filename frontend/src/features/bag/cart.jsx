@@ -14,12 +14,16 @@ async function readJson(response) {
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState(EMPTY);
+  const [status, setStatus] = useState("loading");
 
   const refresh = useCallback(() => {
     fetch("/api/cart")
       .then((response) => (response.ok ? response.json() : EMPTY))
-      .then(setCart)
-      .catch(() => {});
+      .then((data) => {
+        setCart(data);
+        setStatus("ready");
+      })
+      .catch(() => setStatus("error"));
   }, []);
 
   useEffect(() => {
@@ -45,7 +49,7 @@ export function CartProvider({ children }) {
   }, []);
 
   return (
-    <CartContext.Provider value={{ cart, add, remove, refresh }}>
+    <CartContext.Provider value={{ cart, status, add, remove, refresh }}>
       {children}
     </CartContext.Provider>
   );
