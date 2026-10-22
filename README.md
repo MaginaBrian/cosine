@@ -8,11 +8,15 @@ fearofgod.com (fixed nav with category dropdowns, dedicated shop pages).
 ## Run it
 
 ```bash
-npm install
-npm run dev
+npm install --prefix frontend
+python3 -m venv backend/.venv
+backend/.venv/bin/pip install -r backend/requirements.txt
+npm run api    # Flask shop API on http://127.0.0.1:5000
+npm run dev    # site on http://localhost:5173 (proxies /api to Flask)
 ```
 
 Then open the printed local URL (usually http://localhost:5173).
+The catalog and bag live in the Flask API, so both processes need to be running.
 
 To build for production:
 
@@ -20,6 +24,8 @@ To build for production:
 npm run build
 npm run preview   # serve the production build locally
 ```
+
+Both commands run from the repo root and delegate to `frontend/`.
 
 ## Pages
 
@@ -39,24 +45,30 @@ just open `dist/index.html` directly in the browser, or the sub-pages will
 
 ## Structure
 
-- `src/pages/` — one file per route
-- `src/components/Navbar.jsx` — nav bar with hover dropdowns for Men/Women/Kids,
-  built from the `MEN_TYPES` / `WOMEN_TYPES` / `KIDS_TYPES` lists in
-  `src/data/images.js`
-- `src/components/ProductGrid.jsx` + `CategoryFilter.jsx` — shared by the
-  Men/Women/Kids/Featured pages
-- `src/components/Slider.jsx` — the draggable slider used on the Collections
-  page and the homepage Lookbook
-- `src/data/images.js` — every product, price, and image URL, in one place
+The repo is two modules. Root `package.json` only starts them.
+
+- `frontend/` — the Vite + React site
+  - `src/app/` — shell and route table
+  - `src/layout/` — navbar, footer, emblem
+  - `src/features/home/` — homepage sections
+  - `src/features/catalog/` — shop grids and the catalog API client
+  - `src/features/product/` — the piece page
+  - `src/features/bag/` — bag page and cart client
+  - `src/features/studio/` — about and contact
+  - `src/content/images.js` — brand photography and the Men / Women / Kids type lists
+- `backend/shop/` — the Flask package
+  - `catalog.py` — products and `/api/products`
+  - `cart.py` — the session bag and `/api/cart`
+  - `app.py` — process entry that calls `create_app()`
 
 ## Swapping in real photos & video
 
 All imagery currently comes from free Unsplash stock photos as placeholders,
-listed in `src/data/images.js`. To use your own:
+listed in `frontend/src/content/images.js`. To use your own:
 
-1. Drop your files in `src/assets/` (create the folder if it doesn't exist).
-2. Import them at the top of `src/data/images.js`, e.g.
-   `import overcoat from "../assets/overcoat.jpg";`
+1. Drop your files in `frontend/src/assets/`.
+2. Import them at the top of `frontend/src/content/images.js`, e.g.
+   `import overcoat from "@/assets/overcoat.jpg";`
 3. Use that variable instead of the `u("photo-...")` URL.
 
 For video, replace an `<img>` tag with:
@@ -72,7 +84,7 @@ try this — the surrounding layout works with either an image or a video.
 
 ## Brand tokens
 
-Defined as CSS variables at the top of `src/index.css`:
+Defined as CSS variables at the top of `frontend/src/styles/index.css`:
 
 - `--pearl` #FDFFFF — primary background
 - `--silk` #EEE5D9 — secondary surfaces
