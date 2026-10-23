@@ -29,7 +29,7 @@ Both commands run from the repo root and delegate to `frontend/`.
 
 ## Deploy on Render
 
-`render.yaml` is a Render Blueprint with two native services: a Python web service for the Flask API and a static site for the Vite build. No Docker image is involved. The site is built with the API URL, and the API accepts the bag cookie from that site.
+`render.yaml` is a Render Blueprint with two native services: a free Python web service for the Flask API and a static site for the Vite build. No Docker image is involved. The free API sleeps after about 15 minutes without a visit, then takes about a minute to wake. The site is built with the API URL, and the API accepts the bag cookie from that site.
 
 GitHub Actions (`.github/workflows/ci.yml`) lints and builds the frontend and smoke-tests the API. The blueprint deploys only after those checks pass.
 
