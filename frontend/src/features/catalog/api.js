@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { apiFetch } from "@/lib/http";
 
 let cache = null;
 let pending = null;
@@ -6,7 +7,7 @@ let pending = null;
 export function loadCatalog() {
   if (cache) return Promise.resolve(cache);
   if (!pending) {
-    pending = fetch("/api/products")
+    pending = apiFetch("/api/products")
       .then((response) => {
         if (!response.ok) throw new Error("Catalog request failed");
         return response.json();
@@ -52,7 +53,7 @@ export function useProduct(id) {
   useEffect(() => {
     let cancelled = false;
     setState({ product: null, status: "loading" });
-    fetch(`/api/products/${id}`)
+    apiFetch(`/api/products/${id}`)
       .then(async (response) => {
         if (response.status === 404) throw new Error("missing");
         if (!response.ok) throw new Error("error");

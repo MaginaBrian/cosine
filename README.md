@@ -27,6 +27,18 @@ npm run preview   # serve the production build locally
 
 Both commands run from the repo root and delegate to `frontend/`.
 
+## Deploy on Render
+
+`render.yaml` is a Render Blueprint with two native services: a Python web service for the Flask API and a static site for the Vite build. No Docker image is involved. The site is built with the API URL, and the API accepts the bag cookie from that site.
+
+GitHub Actions (`.github/workflows/ci.yml`) lints and builds the frontend and smoke-tests the API. The blueprint deploys only after those checks pass.
+
+1. Push this repo to GitHub and leave Actions enabled.
+2. In Render, choose **New → Blueprint** and select the repo. Render reads `render.yaml`.
+3. Apply the blueprint. The service URL is on the Render dashboard.
+
+Connect the GitHub repo itself, not a public clone URL. Render only sees the Actions checks, and only deploys after they pass, when the repo is linked through GitHub.
+
 ## Pages
 
 - `/` — Home: hero, marquee, Men/Women chooser, About teaser, Craft, Lookbook

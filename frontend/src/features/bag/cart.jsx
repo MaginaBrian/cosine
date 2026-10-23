@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { apiFetch } from "@/lib/http";
 
 const EMPTY = { lines: [], count: 0, subtotal: 0, subtotalLabel: "KSh0.00" };
 
@@ -17,7 +18,7 @@ export function CartProvider({ children }) {
   const [status, setStatus] = useState("loading");
 
   const refresh = useCallback(() => {
-    fetch("/api/cart")
+    apiFetch("/api/cart")
       .then((response) => (response.ok ? response.json() : EMPTY))
       .then((data) => {
         setCart(data);
@@ -31,7 +32,7 @@ export function CartProvider({ children }) {
   }, [refresh]);
 
   const add = useCallback(async (payload) => {
-    const response = await fetch("/api/cart", {
+    const response = await apiFetch("/api/cart", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -42,7 +43,7 @@ export function CartProvider({ children }) {
   }, []);
 
   const remove = useCallback(async (lineId) => {
-    const response = await fetch(`/api/cart/${lineId}`, { method: "DELETE" });
+    const response = await apiFetch(`/api/cart/${lineId}`, { method: "DELETE" });
     const data = await readJson(response);
     setCart(data);
     return data;

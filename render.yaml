@@ -1,0 +1,41 @@
+# Render Blueprint. Connect this repo in the dashboard (New → Blueprint).
+# Deploys run only after the GitHub Actions checks in .github/workflows/ci.yml pass.
+services:
+  - type: web
+    name: cosine-made-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.8"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        fromService:
+          type: web
+          name: cosine-made
+          envVarKey: RENDER_EXTERNAL_URL
+
+  - type: web
+    name: cosine-made
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    autoDeployTrigger: checksPass
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: cosine-made-api
+          envVarKey: RENDER_EXTERNAL_URL

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/features/bag/cart";
+import { apiFetch } from "@/lib/http";
 
 const REGIONS = [
   { name: "Kenya", prefix: "+254" },
@@ -64,7 +65,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/checkout")
+    apiFetch("/api/checkout")
       .then((response) => (response.ok ? response.json() : null))
       .then((draft) => {
         if (!cancelled && draft?.delivery) setForm({ ...EMPTY, ...draft.delivery });
@@ -93,7 +94,7 @@ export default function CheckoutPage() {
     setPending(true);
     setFormError("");
     try {
-      const response = await fetch("/api/checkout", {
+      const response = await apiFetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
