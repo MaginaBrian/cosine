@@ -22,7 +22,7 @@ export default function Philosophy() {
           sits after the tenth wash, not just the first fitting.
         </p>
         <Link to="/about" className="philosophy__link">
-          Read our story →
+          Read our story
         </Link>
       </div>
     </section>

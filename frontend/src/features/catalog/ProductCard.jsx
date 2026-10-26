@@ -8,6 +8,7 @@ export default function ProductCard({ item }) {
           className="collection-card__img collection-card__img--front"
           src={item.img}
           alt={item.title}
+          loading="lazy"
           draggable="false"
         />
         {item.imgBack && (
@@ -16,9 +17,11 @@ export default function ProductCard({ item }) {
             src={item.imgBack}
             alt=""
             aria-hidden="true"
+            loading="lazy"
             draggable="false"
           />
         )}
+        <span className="collection-card__shop">View</span>
       </div>
       <figcaption>
         <span className="collection-card__brand">Cosine Made</span>

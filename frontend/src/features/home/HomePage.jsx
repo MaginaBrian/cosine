@@ -1,17 +1,30 @@
 import Hero from "./Hero";
+import Marquee from "./Marquee";
 import GenderSplit from "./GenderSplit";
+import Lookbook from "./Lookbook";
 import Philosophy from "./Philosophy";
 import Craft from "./Craft";
 import Testimonials from "./Testimonials";
+import Reveal from "./Reveal";
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <GenderSplit />
-      <Philosophy />
-      <Craft />
-      <Testimonials />
+      <Marquee />
+      <Reveal>
+        <GenderSplit />
+      </Reveal>
+      <Lookbook />
+      <Reveal>
+        <Philosophy />
+      </Reveal>
+      <Reveal>
+        <Craft />
+      </Reveal>
+      <Reveal>
+        <Testimonials />
+      </Reveal>
     </>
   );
 }
