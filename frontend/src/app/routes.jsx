@@ -11,6 +11,8 @@ import AboutPage from "@/features/studio/AboutPage";
 import ContactPage from "@/features/studio/ContactPage";
 import PrivacyPage from "@/features/studio/PrivacyPage";
 import AdminPage from "@/features/admin/AdminPage";
+import AccountPage from "@/features/account/AccountPage";
+import RequireAuth from "@/features/account/RequireAuth";
 
 export default function AppRoutes() {
   return (
@@ -22,7 +24,15 @@ export default function AppRoutes() {
       <Route path="/women" element={<WomenPage />} />
       <Route path="/products/:id" element={<ProductPage />} />
       <Route path="/bag" element={<BagPage />} />
-      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route
+        path="/checkout"
+        element={
+          <RequireAuth>
+            <CheckoutPage />
+          </RequireAuth>
+        }
+      />
+      <Route path="/account" element={<AccountPage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/contact" element={<ContactPage />} />

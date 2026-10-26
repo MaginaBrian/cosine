@@ -26,9 +26,13 @@ export default function Footer() {
           <div>
             <span className="footer__label">Follow</span>
             <p>
-              <a href="/">Instagram</a>
+              <a href="https://instagram.com" target="_blank" rel="noreferrer">
+                Instagram
+              </a>
               <br />
-              <a href="/">Pinterest</a>
+              <a href="https://pinterest.com" target="_blank" rel="noreferrer">
+                Pinterest
+              </a>
             </p>
           </div>
           <div>
@@ -44,13 +48,21 @@ export default function Footer() {
             <p>
               <Link to="/about">About</Link>
               <br />
-              <Link to="/contact">Contact</Link>
+              <Link to="/account">Account</Link>
             </p>
           </div>
         </div>
 
         <p className="footer__copy">© {new Date().getFullYear()} Cosine Made</p>
       </div>
+
+      <nav className="footer__legal" aria-label="Site">
+        <Link to="/contact">Contact</Link>
+        <Link to="/about">About</Link>
+        <Link to="/privacy">Privacy and cookies</Link>
+        <Link to="/account">Account</Link>
+        <a href="mailto:studio@cosinemade.com">Client services</a>
+      </nav>
     </footer>
   );
 }

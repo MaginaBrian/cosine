@@ -42,4 +42,13 @@ jobs:
           assert client.get("/api/products").status_code == 200
           missing = client.get("/api/products/does-not-exist")
           assert missing.status_code == 404
+          assert client.post("/api/checkout", json={}).status_code == 401
+          login = client.post("/api/auth/login", json={
+              "email": "studio@cosinemade.com",
+              "password": "cosine-studio",
+          })
+          assert login.status_code == 200
+          token = login.get_json()["token"]
+          orders = client.get("/api/orders", headers={"Authorization": f"Bearer {token}"})
+          assert orders.status_code == 200
           PY

@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
 import { useCart } from "./cart";
+import { useAuth } from "@/features/account/auth";
 
 export default function BagPage() {
   const { cart, remove } = useCart();
+  const { isAuthenticated } = useAuth();
+  const checkoutTo = isAuthenticated ? "/checkout" : "/account?next=%2Fcheckout";
 
   return (
     <div className="page-banner bag">
@@ -44,9 +47,13 @@ export default function BagPage() {
               <span>Subtotal</span>
               <strong>{cart.subtotalLabel}</strong>
             </p>
-            <p className="bag__note">Shipping is calculated when you check out. All sales are final.</p>
-            <Link to="/checkout" className="bag__checkout">
-              Checkout
+            <p className="bag__note">
+              {isAuthenticated
+                ? "Complete every delivery field at checkout to place the order. All sales are final."
+                : "You can keep shopping freely. Create an account or sign in before checkout."}
+            </p>
+            <Link to={checkoutTo} className="bag__checkout">
+              {isAuthenticated ? "Checkout" : "Sign in to checkout"}
             </Link>
           </aside>
         </div>

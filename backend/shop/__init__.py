@@ -5,6 +5,7 @@ from pathlib import Path
 
 from flask import Flask, abort, request, send_from_directory
 
+from shop.auth import auth_bp, ensure_admin_user
 from shop.cart import cart_bp
 from shop.catalog import catalog_bp
 from shop.checkout import checkout_bp
@@ -25,6 +26,8 @@ def create_app():
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SECURE=bool(frontend_origin) or on_render,
     )
+    ensure_admin_user()
+    app.register_blueprint(auth_bp, url_prefix="/api")
     app.register_blueprint(catalog_bp, url_prefix="/api")
     app.register_blueprint(cart_bp, url_prefix="/api")
     app.register_blueprint(checkout_bp, url_prefix="/api")
@@ -56,7 +59,7 @@ def _allow_frontend(app, origin):
         if request.method != "OPTIONS" or request.headers.get("Origin") != origin:
             return None
         response = app.make_default_options_response()
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Admin-Key"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, PATCH, DELETE, OPTIONS"
         return _headers(response)
 

@@ -6,7 +6,7 @@ import AppRoutes from "@/app/routes";
 
 export default function App() {
   const { pathname } = useLocation();
-  const studio = pathname === "/checkout" || pathname === "/admin";
+  const studio = pathname === "/checkout" || pathname === "/admin" || pathname === "/account";
 
   return (
     <>

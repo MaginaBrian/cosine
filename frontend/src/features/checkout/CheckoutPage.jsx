@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "@/features/bag/cart";
+import { useAuth } from "@/features/account/auth";
 import { apiFetch } from "@/lib/http";
 
 const REGIONS = [
@@ -106,12 +107,22 @@ function Field({ name, label, value, onChange, error, as = "input", children, au
 
 export default function CheckoutPage() {
   const { cart, status, refresh } = useCart();
+  const { user } = useAuth();
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [pending, setPending] = useState(false);
   const [order, setOrder] = useState(null);
   const [summaryOpen, setSummaryOpen] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    setForm((current) => ({
+      ...current,
+      email: current.email || user.email || "",
+      name: current.name || (user.name || "").split(" ")[0] || "",
+    }));
+  }, [user]);
 
   useEffect(() => {
     let cancelled = false;

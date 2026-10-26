@@ -2,8 +2,9 @@
 
 import re
 
-from flask import Blueprint, jsonify, request, session
+from flask import Blueprint, g, jsonify, request, session
 
+from shop.auth import require_user
 from shop.orders import place_order
 
 checkout_bp = Blueprint("checkout", __name__)
@@ -53,6 +54,7 @@ def _problems(delivery):
 
 
 @checkout_bp.get("/checkout")
+@require_user
 def get_checkout():
     draft = session.get("checkout")
     if not draft:
@@ -61,6 +63,7 @@ def get_checkout():
 
 
 @checkout_bp.post("/checkout")
+@require_user
 def save_checkout():
     lines = session.get("cart") or []
     if not lines:
@@ -69,9 +72,9 @@ def save_checkout():
     delivery = _clean(request.get_json(silent=True) or {})
     problems = _problems(delivery)
     if problems:
-        return jsonify({"error": "Check the delivery details.", "fields": problems}), 400
+        return jsonify({"error": "Complete every required checkout field.", "fields": problems}), 400
 
-    order = place_order(delivery, lines)
+    order = place_order(delivery, lines, user=g.user)
     session["checkout"] = {
         "id": order["id"],
         "number": order["number"],

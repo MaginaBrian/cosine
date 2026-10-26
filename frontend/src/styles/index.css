@@ -913,6 +913,25 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   .footer__bottom { flex-direction: column; }
 }
 
+.footer__legal {
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--edge) 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  padding-top: 22px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.footer__legal a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ---------- Product page ---------- */
 .sr-only {
   position: absolute;
@@ -1722,4 +1741,121 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   margin-top: 14px;
   display: flex;
   justify-content: flex-end;
+}
+.admin__actions a {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  padding: 10px 16px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ---------- Account ---------- */
+.account {
+  min-height: calc(100vh - var(--nav-h));
+  max-width: 560px;
+  margin: 0 auto;
+  padding: calc(var(--nav-h) + 48px) var(--edge) 80px;
+}
+.account__intro h1 {
+  font-size: clamp(36px, 6vw, 56px);
+  margin: 0 0 16px;
+}
+.account__intro p {
+  color: rgba(0, 0, 0, 0.7);
+  margin: 0;
+}
+.account__status {
+  margin-top: 48px;
+  color: rgba(0, 0, 0, 0.6);
+}
+.account__tabs {
+  display: flex;
+  gap: 24px;
+  margin: 36px 0 28px;
+}
+.account__tabs button {
+  border: 0;
+  background: none;
+  padding: 0 0 8px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.4);
+  border-bottom: 2px solid transparent;
+}
+.account__tabs button.is-active {
+  color: var(--onyx);
+  border-bottom-color: var(--velvet);
+}
+.account__form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+.account__form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 1px solid #1c1c1c;
+  padding-bottom: 4px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8a8a8a;
+}
+.account__form input {
+  border: 0;
+  background: transparent;
+  padding: 6px 0 8px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--onyx);
+}
+.account__form button,
+.account__cta {
+  align-self: flex-start;
+  border: 0;
+  background: #000;
+  color: #fff;
+  padding: 14px 28px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+}
+.account__panel {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.account__ghost {
+  border: 1px solid #000;
+  background: transparent;
+  color: #000;
+  padding: 14px 28px;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.account__error {
+  margin: 0;
+  color: #8a2b2b;
+  font-size: 13px;
+}
+.account__hint {
+  margin: -8px 0 0;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.55);
+  letter-spacing: 0;
+  text-transform: none;
 }

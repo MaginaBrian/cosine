@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "@/lib/http";
+import { useAuth } from "@/features/account/auth";
+import RequireAuth from "@/features/account/RequireAuth";
 
-const KEY_STORAGE = "cosine-admin-key";
 const STAGES = ["Processing", "Production", "Stock", "Dispatch"];
 
 function stageClass(stage) {
@@ -22,24 +23,19 @@ function formatWhen(iso) {
   });
 }
 
-export default function AdminPage() {
-  const [key, setKey] = useState(() => sessionStorage.getItem(KEY_STORAGE) || "");
-  const [draftKey, setDraftKey] = useState("");
+function AdminOrders() {
+  const { logout } = useAuth();
   const [orders, setOrders] = useState([]);
-  const [status, setStatus] = useState(key ? "loading" : "locked");
+  const [status, setStatus] = useState("loading");
   const [error, setError] = useState("");
 
-  const load = useCallback(async (adminKey) => {
+  const load = useCallback(async () => {
     setStatus("loading");
     setError("");
     try {
-      const response = await apiFetch("/api/orders", {
-        headers: { "X-Admin-Key": adminKey },
-      });
+      const response = await apiFetch("/api/orders");
       const data = await response.json().catch(() => ({}));
-      if (!response.ok) {
-        throw new Error(data.error || "Could not load orders.");
-      }
+      if (!response.ok) throw new Error(data.error || "Could not load orders.");
       setOrders(data.orders || []);
       setStatus("ready");
     } catch (err) {
@@ -50,33 +46,8 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (key) load(key);
-  }, [key, load]);
-
-  const signIn = async (event) => {
-    event.preventDefault();
-    setError("");
-    const response = await apiFetch("/api/admin/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ key: draftKey }),
-    });
-    const data = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      setError(data.error || "Wrong studio key.");
-      return;
-    }
-    sessionStorage.setItem(KEY_STORAGE, draftKey);
-    setKey(draftKey);
-    setDraftKey("");
-  };
-
-  const signOut = () => {
-    sessionStorage.removeItem(KEY_STORAGE);
-    setKey("");
-    setOrders([]);
-    setStatus("locked");
-  };
+    load();
+  }, [load]);
 
   const setStage = async (orderId, stage) => {
     const previous = orders;
@@ -85,10 +56,7 @@ export default function AdminPage() {
     );
     const response = await apiFetch(`/api/orders/${orderId}`, {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Admin-Key": key,
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ stage }),
     });
     if (!response.ok) {
@@ -100,10 +68,7 @@ export default function AdminPage() {
 
   const remove = async (orderId) => {
     if (!window.confirm("Delete this order from the studio list?")) return;
-    const response = await apiFetch(`/api/orders/${orderId}`, {
-      method: "DELETE",
-      headers: { "X-Admin-Key": key },
-    });
+    const response = await apiFetch(`/api/orders/${orderId}`, { method: "DELETE" });
     if (!response.ok) {
       const data = await response.json().catch(() => ({}));
       setError(data.error || "Could not delete the order.");
@@ -111,32 +76,6 @@ export default function AdminPage() {
     }
     setOrders((current) => current.filter((order) => order.id !== orderId));
   };
-
-  if (status === "locked") {
-    return (
-      <div className="admin">
-        <div className="admin__intro">
-          <span className="eyebrow">Studio</span>
-          <h1>All orders.</h1>
-          <p>Sign in with the studio key to move pieces through Processing, Production, Stock, and Dispatch.</p>
-        </div>
-        <form className="admin__login" onSubmit={signIn}>
-          <label>
-            <span>Studio key</span>
-            <input
-              type="password"
-              value={draftKey}
-              onChange={(event) => setDraftKey(event.target.value)}
-              autoComplete="current-password"
-              required
-            />
-          </label>
-          {error && <p className="admin__error">{error}</p>}
-          <button type="submit">Sign in</button>
-        </form>
-      </div>
-    );
-  }
 
   return (
     <div className="admin">
@@ -151,10 +90,11 @@ export default function AdminPage() {
             </p>
           </div>
           <div className="admin__actions">
-            <button type="button" onClick={() => load(key)}>
+            <button type="button" onClick={load}>
               Refresh
             </button>
-            <button type="button" onClick={signOut}>
+            <Link to="/account">Account</Link>
+            <button type="button" onClick={logout}>
               Sign out
             </button>
           </div>
@@ -162,12 +102,10 @@ export default function AdminPage() {
       </div>
 
       {error && <p className="admin__error">{error}</p>}
-
       {status === "loading" && <p className="admin__empty">Loading orders…</p>}
-
       {status === "ready" && orders.length === 0 && (
         <p className="admin__empty">
-          No orders yet. Place one from the <Link to="/collections">shop</Link>, then refresh.
+          No orders yet. Customers place them from the <Link to="/collections">shop</Link>.
         </p>
       )}
 
@@ -255,7 +193,14 @@ export default function AdminPage() {
           </div>
         </>
       )}
-
     </div>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <RequireAuth admin>
+      <AdminOrders />
+    </RequireAuth>
   );
 }

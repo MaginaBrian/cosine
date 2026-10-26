@@ -1,13 +1,13 @@
 """Orders module: persist placed orders and track fulfilment stage."""
 
 import json
-import os
 import threading
 from datetime import datetime, timezone
 from pathlib import Path
 
 from flask import Blueprint, jsonify, request
 
+from shop.auth import require_admin
 from shop.catalog import money_exact
 
 orders_bp = Blueprint("orders", __name__)
@@ -16,16 +16,6 @@ STAGES = ("Processing", "Production", "Stock", "Dispatch")
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
 ORDERS_FILE = DATA_DIR / "orders.json"
 _LOCK = threading.Lock()
-
-
-def _admin_key():
-    return os.environ.get("ADMIN_KEY", "cosine-studio")
-
-
-def _authorized():
-    expected = _admin_key()
-    provided = request.headers.get("X-Admin-Key") or request.args.get("key") or ""
-    return provided == expected
 
 
 def _now():
@@ -55,7 +45,7 @@ def _next_number(orders):
     return f"CM-{highest + 1:04d}"
 
 
-def place_order(delivery, lines):
+def place_order(delivery, lines, user=None):
     """Save a bag as an order in Processing. Called from checkout."""
     with _LOCK:
         orders = _load()
@@ -64,6 +54,8 @@ def place_order(delivery, lines):
             "number": _next_number(orders),
             "createdAt": _now(),
             "stage": "Processing",
+            "userId": (user or {}).get("id"),
+            "userEmail": (user or {}).get("email"),
             "delivery": delivery,
             "count": sum(line["qty"] for line in lines),
             "subtotal": sum(line["price"] * line["qty"] for line in lines),
@@ -88,27 +80,17 @@ def place_order(delivery, lines):
         return order
 
 
-@orders_bp.post("/admin/login")
-def admin_login():
-    body = request.get_json(silent=True) or {}
-    if body.get("key") != _admin_key():
-        return jsonify({"error": "Wrong studio key."}), 401
-    return jsonify({"ok": True})
-
-
 @orders_bp.get("/orders")
+@require_admin
 def list_orders():
-    if not _authorized():
-        return jsonify({"error": "Studio key required."}), 401
     with _LOCK:
         orders = _load()
     return jsonify({"orders": orders, "stages": list(STAGES), "count": len(orders)})
 
 
 @orders_bp.patch("/orders/<order_id>")
+@require_admin
 def update_order(order_id):
-    if not _authorized():
-        return jsonify({"error": "Studio key required."}), 401
     body = request.get_json(silent=True) or {}
     stage = body.get("stage")
     if stage not in STAGES:
@@ -126,9 +108,8 @@ def update_order(order_id):
 
 
 @orders_bp.delete("/orders/<order_id>")
+@require_admin
 def delete_order(order_id):
-    if not _authorized():
-        return jsonify({"error": "Studio key required."}), 401
     with _LOCK:
         orders = _load()
         kept = [item for item in orders if item["id"] != order_id]

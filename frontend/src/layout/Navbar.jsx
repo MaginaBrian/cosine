@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { MEN_TYPES, WOMEN_TYPES } from "@/content/images";
 import { useCart } from "@/features/bag/cart";
+import { useAuth } from "@/features/account/auth";
 import Emblem from "@/layout/Emblem";
 
 const LEFT = [
@@ -13,12 +14,9 @@ const LEFT = [
 const RIGHT = [
   { label: "Search" },
   { label: "About", to: "/about" },
-  { label: "Contact", to: "/contact" },
-  { label: "Admin", to: "/admin" },
+  { label: "Account", to: "/account" },
   { label: "Bag", to: "/bag" },
 ];
-
-const ALL_LINKS = [...LEFT, ...RIGHT.filter((item) => item.to)];
 
 function NavItem({ item, openMenu, setOpenMenu, bagCount }) {
   if (!item.to) {
@@ -57,6 +55,16 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
   const { cart } = useCart();
+  const { isAdmin } = useAuth();
+  const right = isAdmin
+    ? [
+        { label: "Search" },
+        { label: "About", to: "/about" },
+        { label: "Account", to: "/account" },
+        { label: "Orders", to: "/admin" },
+        { label: "Bag", to: "/bag" },
+      ]
+    : RIGHT;
 
   return (
     <header className="nav">
@@ -73,7 +81,7 @@ export default function Navbar() {
         </Link>
 
         <nav className="nav__links nav__links--right">
-          {RIGHT.map((item) => (
+          {right.map((item) => (
             <NavItem key={item.to || item.label} item={item} openMenu={openMenu} setOpenMenu={setOpenMenu} bagCount={cart.count} />
           ))}
         </nav>
@@ -89,7 +97,7 @@ export default function Navbar() {
       </div>
 
       <div className={`nav__mobile ${open ? "is-open" : ""}`}>
-        {ALL_LINKS.map((item) => (
+        {[...LEFT, ...right.filter((item) => item.to)].map((item) => (
           <Link key={item.to} to={item.to} onClick={() => setOpen(false)}>
             {item.label}
             {item.to === "/bag" && cart.count > 0 ? ` (${cart.count})` : ""}
