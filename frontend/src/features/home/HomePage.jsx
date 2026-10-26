@@ -1,6 +1,6 @@
 import Hero from "./Hero";
 import GenderSplit from "./GenderSplit";
-import Lookbook from "./Lookbook";
+import ShopByColour from "./ShopByColour";
 import Philosophy from "./Philosophy";
 import Craft from "./Craft";
 import Testimonials from "./Testimonials";
@@ -13,7 +13,7 @@ export default function Home() {
       <Reveal>
         <GenderSplit />
       </Reveal>
-      <Lookbook />
+      <ShopByColour />
       <Reveal>
         <Philosophy />
       </Reveal>

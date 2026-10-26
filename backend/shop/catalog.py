@@ -369,6 +369,7 @@ def card(product):
         "price": product["price"],
         "priceLabel": _money_label(product["price"]),
         "priceExact": money_exact(product["price"]),
+        "colors": product["colors"],
         "img": images[0],
         "imgBack": images[1] if len(images) > 1 else None,
         "featured": product["featuredRank"] is not None,

@@ -4,6 +4,7 @@ import CollectionsPage from "@/features/catalog/CollectionsPage";
 import FeaturedPage from "@/features/catalog/FeaturedPage";
 import MenPage from "@/features/catalog/MenPage";
 import WomenPage from "@/features/catalog/WomenPage";
+import ColourPage from "@/features/catalog/ColourPage";
 import ProductPage from "@/features/product/ProductPage";
 import BagPage from "@/features/bag/BagPage";
 import CheckoutPage from "@/features/checkout/CheckoutPage";
@@ -22,6 +23,7 @@ export default function AppRoutes() {
       <Route path="/featured" element={<FeaturedPage />} />
       <Route path="/men" element={<MenPage />} />
       <Route path="/women" element={<WomenPage />} />
+      <Route path="/colour/:slug" element={<ColourPage />} />
       <Route path="/products/:id" element={<ProductPage />} />
       <Route path="/bag" element={<BagPage />} />
       <Route

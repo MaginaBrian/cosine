@@ -1,0 +1,101 @@
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { colourStories, productMatchesColour } from "@/content/images";
+import { useCatalog } from "@/features/catalog/api";
+import Reveal from "./Reveal";
+
+export default function ShopByColour() {
+  const [activeSlug, setActiveSlug] = useState(null);
+  const { products } = useCatalog();
+  const active = colourStories.find((story) => story.slug === activeSlug) || null;
+
+  const matched = useMemo(() => {
+    if (!active) return [];
+    return (products || []).filter((product) => productMatchesColour(product, active)).slice(0, 6);
+  }, [active, products]);
+
+  useEffect(() => {
+    if (!active) return undefined;
+    const onKey = (event) => {
+      if (event.key === "Escape") setActiveSlug(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [active]);
+
+  useEffect(() => {
+    document.body.classList.toggle("colour-open", Boolean(active));
+    return () => document.body.classList.remove("colour-open");
+  }, [active]);
+
+  return (
+    <Reveal as="section" className="shop-colour">
+      <div className="shop-colour__head">
+        <h2>/ Shop By Colour</h2>
+        <Link to="/collections" className="shop-colour__arrow" aria-label="Browse all collections">
+          →
+        </Link>
+      </div>
+
+      <div className="shop-colour__rail">
+        {colourStories.map((story) => (
+          <button
+            key={story.slug}
+            type="button"
+            className={`shop-colour__tile${activeSlug === story.slug ? " is-active" : ""}`}
+            onClick={() => setActiveSlug(activeSlug === story.slug ? null : story.slug)}
+          >
+            <span className="shop-colour__swatch">
+              <img src={story.swatch} alt="" draggable="false" />
+            </span>
+            <span className="shop-colour__name">{story.name}</span>
+          </button>
+        ))}
+      </div>
+
+      {active && (
+        <div className="colour-reveal" role="dialog" aria-label={`${active.name} looks`}>
+          <div className="colour-reveal__bar">
+            <p className="colour-reveal__title">/ {active.name}</p>
+            <button
+              type="button"
+              className="colour-reveal__close"
+              aria-label="Close colour look"
+              onClick={() => setActiveSlug(null)}
+            >
+              ×
+            </button>
+          </div>
+
+          <div className="colour-reveal__looks">
+            {active.looks.map((src, index) => (
+              <figure key={src} className="colour-reveal__look">
+                <img src={src} alt={`${active.name} look ${index + 1}`} />
+              </figure>
+            ))}
+          </div>
+
+          {matched.length > 0 && (
+            <div className="colour-reveal__products">
+              {matched.map((item) => (
+                <Link key={item.id} to={`/products/${item.id}`} className="colour-reveal__product">
+                  <img src={item.img} alt={item.title} />
+                  <span className="colour-reveal__product-meta">
+                    <span>{item.title}</span>
+                    <span>{item.priceLabel || item.price}</span>
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          <div className="colour-reveal__foot">
+            <Link to={`/colour/${active.slug}`} className="colour-reveal__cta">
+              Shop {active.name} →
+            </Link>
+          </div>
+        </div>
+      )}
+    </Reveal>
+  );
+}
