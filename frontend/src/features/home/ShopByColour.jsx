@@ -45,9 +45,11 @@ export default function ShopByColour() {
             className={`shop-colour__tile${activeSlug === story.slug ? " is-active" : ""}`}
             onClick={() => setActiveSlug(activeSlug === story.slug ? null : story.slug)}
           >
-            <span className="shop-colour__swatch">
-              <img src={story.swatch} alt="" draggable="false" />
-            </span>
+            <span
+              className="shop-colour__swatch"
+              style={{ "--tone": story.tone }}
+              aria-hidden="true"
+            />
             <span className="shop-colour__name">{story.name}</span>
           </button>
         ))}

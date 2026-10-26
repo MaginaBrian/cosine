@@ -58,14 +58,14 @@ export const homeCollections = [
 ];
 
 /**
- * Shop by Colour stories (TALA-style).
- * `match` is matched against product colour names (case-insensitive).
+ * Shop by Colour stories (TALA-style fabric tones).
+ * `tone` is the swatch colour; `match` filters product colour names.
  */
 export const colourStories = [
   {
     slug: "coffee-browns",
     name: "Coffee Browns",
-    swatch: u("photo-1601924994987-69e26d50dc26", 900),
+    tone: "#4A3428",
     match: ["camel", "cocoa", "stone", "sand", "khaki", "oatmeal"],
     looks: [
       u("photo-1531384441138-2736e62e0919", 900),
@@ -75,9 +75,9 @@ export const colourStories = [
     ],
   },
   {
-    slug: "blush",
-    name: "Blush",
-    swatch: u("photo-1576566588028-4147f3842f27", 900),
+    slug: "blush-pink",
+    name: "Blush Pink",
+    tone: "#E8C4C0",
     match: ["champagne", "ivory", "pearl", "ecru"],
     looks: [
       u("photo-1488426862026-3ee34a7d66df", 900),
@@ -87,10 +87,10 @@ export const colourStories = [
     ],
   },
   {
-    slug: "ink",
-    name: "Ink",
-    swatch: u("photo-1618354691373-d851c5c3a990", 900),
-    match: ["black", "onyx", "ink", "charcoal"],
+    slug: "burgundy",
+    name: "Burgundy",
+    tone: "#5C1A2E",
+    match: ["cocoa", "charcoal", "black", "onyx"],
     looks: [
       u("photo-1463453091185-61582044d556", 900),
       u("photo-1492562080023-ab3db95bfbce", 900),
@@ -101,7 +101,7 @@ export const colourStories = [
   {
     slug: "olive",
     name: "Dark Olive",
-    swatch: u("photo-1594938298603-c8148c4dae35", 900),
+    tone: "#3D4630",
     match: ["khaki", "stone", "sand", "camel"],
     looks: [
       u("photo-1634826260499-7d97a6049913", 900),
@@ -113,7 +113,7 @@ export const colourStories = [
   {
     slug: "navy",
     name: "Midnight Navy",
-    swatch: u("photo-1558769132-cb1aea458c5e", 900),
+    tone: "#0F1A2E",
     match: ["navy", "indigo", "ink"],
     looks: [
       u("photo-1614252369475-531eba835eb1", 900),
@@ -133,6 +133,4 @@ export function productMatchesColour(product, story) {
   return story.match.some((token) => colours.some((c) => c.includes(token)));
 }
 
-export const craftImage = u("photo-1595882669314-919b3d51f2c7", 1800);
-export const philosophyImage = u("photo-1531123897727-8f129e1688ce", 1400);
 export const originImage = u("photo-1522529599102-193c0d76b5b6", 1600);
