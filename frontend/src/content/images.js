@@ -134,3 +134,33 @@ export function productMatchesColour(product, story) {
 }
 
 export const originImage = u("photo-1522529599102-193c0d76b5b6", 1600);
+
+/** Fixed four pillars after reviews (TALA-style — no carousel). */
+export const studioPillars = [
+  {
+    id: "insiders",
+    label: "Cosine Insiders",
+    href: "/insiders",
+    src: u("photo-1594737625785-a6cbdabd333c", 1200),
+  },
+  {
+    id: "purpose",
+    label: "Purpose",
+    href: "/purpose",
+    src: u("photo-1634826210700-efc8e0375bf9", 1200),
+  },
+  {
+    id: "product",
+    label: "Product",
+    href: "/product",
+    src: u("photo-1558769132-cb1aea458c5e", 1200),
+  },
+  {
+    id: "people",
+    label: "People",
+    href: "/people",
+    src: u("photo-1531123897727-8f129e1688ce", 1200),
+  },
+];
+
+

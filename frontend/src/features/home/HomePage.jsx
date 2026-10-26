@@ -3,6 +3,7 @@ import Hero from "./Hero";
 import CampaignBlock from "./CampaignBlock";
 import ShopByColour from "./ShopByColour";
 import Testimonials from "./Testimonials";
+import Pillars from "./Pillars";
 import Reveal from "./Reveal";
 
 const followOns = homeCollections.filter((c) => c.id !== "axis");
@@ -18,6 +19,7 @@ export default function Home() {
       <Reveal>
         <Testimonials />
       </Reveal>
+      <Pillars />
     </>
   );
 }

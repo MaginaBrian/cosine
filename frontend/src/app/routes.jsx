@@ -9,6 +9,10 @@ import ProductPage from "@/features/product/ProductPage";
 import BagPage from "@/features/bag/BagPage";
 import CheckoutPage from "@/features/checkout/CheckoutPage";
 import AboutPage from "@/features/studio/AboutPage";
+import InsidersPage from "@/features/studio/InsidersPage";
+import PurposePage from "@/features/studio/PurposePage";
+import ProductStoryPage from "@/features/studio/ProductStoryPage";
+import PeoplePage from "@/features/studio/PeoplePage";
 import ContactPage from "@/features/studio/ContactPage";
 import PrivacyPage from "@/features/studio/PrivacyPage";
 import AdminPage from "@/features/admin/AdminPage";
@@ -36,6 +40,10 @@ export default function AppRoutes() {
       />
       <Route path="/account" element={<AccountPage />} />
       <Route path="/about" element={<AboutPage />} />
+      <Route path="/insiders" element={<InsidersPage />} />
+      <Route path="/purpose" element={<PurposePage />} />
+      <Route path="/product" element={<ProductStoryPage />} />
+      <Route path="/people" element={<PeoplePage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route

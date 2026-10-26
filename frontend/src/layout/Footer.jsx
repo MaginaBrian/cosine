@@ -48,11 +48,15 @@ export default function Footer() {
             </p>
           </div>
           <div>
-            <span className="footer__label">Studio</span>
+            <span className="footer__label">We are Cosine</span>
             <p>
-              <Link to="/about">About</Link>
+              <Link to="/purpose">Purpose</Link>
               <br />
-              <Link to="/account">Account</Link>
+              <Link to="/product">Product</Link>
+              <br />
+              <Link to="/people">People</Link>
+              <br />
+              <Link to="/insiders">Insiders</Link>
               {showStudio && (
                 <>
                   <br />
