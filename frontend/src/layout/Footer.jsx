@@ -1,82 +1,57 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import Emblem from "@/layout/Emblem";
 import { useAuth } from "@/features/account/auth";
 
 export default function Footer() {
   const { status, isAdmin } = useAuth();
   const showStudio = status === "ready" && isAdmin;
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+
+  const join = (event) => {
+    event.preventDefault();
+    if (!email.trim()) return;
+    setSent(true);
+    setEmail("");
+  };
 
   return (
     <footer className="footer">
-      <div className="footer__top">
-        <h2>
-          Let's make
-          <br />
-          something timeless.
-        </h2>
-        <a className="footer__mail" href="mailto:studio@cosinemade.com">
-          studio@cosinemade.com ↗
-        </a>
+      <div className="footer__bar">
+        <form className="footer__join" onSubmit={join}>
+          <span className="footer__join-label">Join the conversation</span>
+          {sent ? (
+            <p className="footer__join-done">You’re on the list.</p>
+          ) : (
+            <label className="footer__join-field">
+              <span className="sr-only">Email address</span>
+              <input
+                type="email"
+                name="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="Email address"
+                autoComplete="email"
+                required
+              />
+              <button type="submit" aria-label="Subscribe">
+                →
+              </button>
+            </label>
+          )}
+        </form>
+
+        <nav className="footer__links" aria-label="Site">
+          <Link to="/contact">Contact</Link>
+          <a href="mailto:studio@cosinemade.com">Client services</a>
+          <Link to="/privacy">Legal notices</Link>
+          <Link to="/purpose">Purpose</Link>
+          <a href="https://instagram.com" target="_blank" rel="noreferrer">
+            Social
+          </a>
+          {showStudio && <Link to="/admin">Studio</Link>}
+        </nav>
       </div>
-
-      <div className="footer__bottom">
-        <Emblem size={72} spin={false} />
-
-        <div className="footer__cols">
-          <div>
-            <span className="footer__label">Studio</span>
-            <p>Nairobi, Kenya</p>
-          </div>
-          <div>
-            <span className="footer__label">Follow</span>
-            <p>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer">
-                Instagram
-              </a>
-              <br />
-              <a href="https://pinterest.com" target="_blank" rel="noreferrer">
-                Pinterest
-              </a>
-            </p>
-          </div>
-          <div>
-            <span className="footer__label">Shop</span>
-            <p>
-              <Link to="/men">Men</Link>
-              <br />
-              <Link to="/women">Women</Link>
-            </p>
-          </div>
-          <div>
-            <span className="footer__label">We are Cosine</span>
-            <p>
-              <Link to="/purpose">Purpose</Link>
-              <br />
-              <Link to="/product">Product</Link>
-              <br />
-              <Link to="/people">People</Link>
-              <br />
-              <Link to="/insiders">Insiders</Link>
-              {showStudio && (
-                <>
-                  <br />
-                  <Link to="/admin">Orders</Link>
-                </>
-              )}
-            </p>
-          </div>
-        </div>
-
-        <p className="footer__copy">© {new Date().getFullYear()} Cosine Made</p>
-      </div>
-
-      <nav className="footer__legal" aria-label="Site">
-        <Link to="/contact">Contact</Link>
-        <Link to="/about">About</Link>
-        <Link to="/privacy">Privacy and cookies</Link>
-        <Link to="/account">Account</Link>
-        <a href="mailto:studio@cosinemade.com">Client services</a>
-      </nav>
     </footer>
   );
 }
