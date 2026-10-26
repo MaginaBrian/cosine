@@ -27,17 +27,28 @@ npm run preview   # serve the production build locally
 
 Both commands run from the repo root and delegate to `frontend/`.
 
-## Deploy on Render
+## CI/CD (GitHub Actions → Render)
 
-`render.yaml` is a Render Blueprint with two native services: a free Python web service for the Flask API and a static site for the Vite build. No Docker image is involved. The free API sleeps after about 15 minutes without a visit, then takes about a minute to wake. The site is built with the API URL, and the API accepts the bag cookie from that site.
+Push or open a PR → **CI** lints/builds the frontend and smoke-tests the API.
+Merge/push to `main` and CI passes → **Deploy** triggers both Render services.
 
-GitHub Actions (`.github/workflows/ci.yml`) lints and builds the frontend and smoke-tests the API. The blueprint deploys only after those checks pass.
+```
+push / PR  →  CI (frontend + backend)  →  (main only) Deploy hooks → Render
+```
+
+### One-time setup
 
 1. Push this repo to GitHub and leave Actions enabled.
-2. In Render, choose **New → Blueprint** and select the repo. Render reads `render.yaml`.
-3. Apply the blueprint. The service URL is on the Render dashboard.
+2. In Render, choose **New → Blueprint** and select the repo. Render reads `render.yaml` (API + static site, auto-deploy off).
+3. Apply the blueprint and set `ADMIN_PASSWORD` when prompted.
+4. For each service, open **Settings → Deploy Hook** and copy the URL:
+   - `cosine-made-api` → GitHub secret `RENDER_DEPLOY_HOOK_API`
+   - `cosine-made` → GitHub secret `RENDER_DEPLOY_HOOK_WEB`
+5. In the GitHub repo: **Settings → Secrets and variables → Actions → New repository secret** for both hooks.
 
-Connect the GitHub repo itself, not a public clone URL. Render only sees the Actions checks, and only deploys after they pass, when the repo is linked through GitHub.
+After that, every green CI run on `main` redeploys the API and the site to the commit that passed.
+
+Workflows live in `.github/workflows/ci.yml` and `.github/workflows/deploy.yml`. The free API sleeps after about 15 minutes without a visit, then takes about a minute to wake.
 
 ## Pages
 

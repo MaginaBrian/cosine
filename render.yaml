@@ -1,5 +1,6 @@
 # Render Blueprint. Connect this repo in the dashboard (New → Blueprint).
-# Deploys run only after the GitHub Actions checks in .github/workflows/ci.yml pass.
+# Auto-deploy is off so GitHub Actions owns CD: after CI passes on main,
+# .github/workflows/deploy.yml POSTs each service's Deploy Hook.
 services:
   - type: web
     name: cosine-made-api
@@ -9,7 +10,7 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     healthCheckPath: /api/health
-    autoDeployTrigger: checksPass
+    autoDeployTrigger: off
     envVars:
       - key: PYTHON_VERSION
         value: "3.12.8"
@@ -33,7 +34,7 @@ services:
     rootDir: frontend
     buildCommand: npm ci && npm run build
     staticPublishPath: dist
-    autoDeployTrigger: checksPass
+    autoDeployTrigger: off
     routes:
       - type: rewrite
         source: /*

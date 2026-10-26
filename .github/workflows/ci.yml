@@ -2,10 +2,16 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   frontend:
+    name: Frontend
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -22,6 +28,7 @@ jobs:
       - run: npm run build
 
   backend:
+    name: Backend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,3 +59,17 @@ jobs:
           orders = client.get("/api/orders", headers={"Authorization": f"Bearer {token}"})
           assert orders.status_code == 200
           PY
+
+  # Single gate for branch protection and for the Deploy workflow.
+  ci:
+    name: CI
+    needs: [frontend, backend]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Require frontend and backend
+        run: |
+          frontend="${{ needs.frontend.result }}"
+          backend="${{ needs.backend.result }}"
+          echo "frontend=$frontend backend=$backend"
+          test "$frontend" = success -a "$backend" = success

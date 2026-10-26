@@ -80,8 +80,19 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 100;
-  background: var(--onyx);
   color: var(--pearl);
+  transition: background-color 0.35s ease, backdrop-filter 0.35s ease, box-shadow 0.35s ease;
+}
+
+/* Landing: clear over the hero; solid after scroll (and on every other page). */
+.nav--clear {
+  background: transparent;
+  box-shadow: none;
+}
+
+.nav--solid {
+  background: var(--onyx);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .nav__row--primary {
@@ -216,8 +227,9 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
 /* ---------- Hero ---------- */
 .hero {
   position: relative;
-  margin-top: var(--nav-h);
-  min-height: calc(100svh - var(--nav-h));
+  /* Full-bleed under the clear home nav (Fear of God-style). */
+  margin-top: 0;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;

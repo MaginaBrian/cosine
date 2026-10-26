@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { MEN_TYPES, WOMEN_TYPES } from "@/content/images";
 import { useCart } from "@/features/bag/cart";
 import { useAuth } from "@/features/account/auth";
-import Emblem from "@/layout/Emblem";
 
 const LEFT = [
   { label: "Collections", to: "/collections" },
@@ -13,7 +12,6 @@ const LEFT = [
 
 const RIGHT = [
   { label: "Search" },
-  { label: "About", to: "/about" },
   { label: "Account", to: "/account" },
   { label: "Bag", to: "/bag" },
 ];
@@ -54,20 +52,41 @@ function NavItem({ item, openMenu, setOpenMenu, bagCount }) {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+  const { pathname } = useLocation();
   const { cart } = useCart();
   const { isAdmin } = useAuth();
+  const onHome = pathname === "/";
+  const clear = onHome && !scrolled && !open;
+
   const right = isAdmin
     ? [
         { label: "Search" },
-        { label: "About", to: "/about" },
         { label: "Account", to: "/account" },
         { label: "Orders", to: "/admin" },
         { label: "Bag", to: "/bag" },
       ]
     : RIGHT;
 
+  useEffect(() => {
+    setOpen(false);
+    setOpenMenu(null);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!onHome) {
+      setScrolled(false);
+      return undefined;
+    }
+
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [onHome]);
+
   return (
-    <header className="nav">
+    <header className={`nav ${clear ? "nav--clear" : "nav--solid"}${open ? " is-open" : ""}`}>
       <div className="nav__row nav__row--primary">
         <nav className="nav__links nav__links--left">
           {LEFT.map((item) => (
@@ -76,8 +95,7 @@ export default function Navbar() {
         </nav>
 
         <Link to="/" className="nav__wordmark">
-          <Emblem size={30} spin={false} />
-          <span>Cosine&nbsp;Made</span>
+          Cosine&nbsp;Made
         </Link>
 
         <nav className="nav__links nav__links--right">

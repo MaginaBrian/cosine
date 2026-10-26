@@ -1,0 +1,50 @@
+name: Deploy
+
+# After CI succeeds on main, trigger Render rebuilds via deploy hooks.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: deploy-render
+  cancel-in-progress: false
+
+jobs:
+  render:
+    name: Render
+    runs-on: ubuntu-latest
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push'
+    steps:
+      - name: Check deploy hook secrets
+        env:
+          API_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_API }}
+          WEB_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_WEB }}
+        run: |
+          missing=0
+          if [ -z "$API_HOOK" ]; then
+            echo "::error::Missing secret RENDER_DEPLOY_HOOK_API (Render → cosine-made-api → Settings → Deploy Hook)"
+            missing=1
+          fi
+          if [ -z "$WEB_HOOK" ]; then
+            echo "::error::Missing secret RENDER_DEPLOY_HOOK_WEB (Render → cosine-made → Settings → Deploy Hook)"
+            missing=1
+          fi
+          exit "$missing"
+
+      - name: Deploy API (cosine-made-api)
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_API }}
+        run: |
+          echo "Triggering API deploy for commit ${{ github.event.workflow_run.head_sha }}"
+          curl -fsS -X POST "${HOOK}?ref=${{ github.event.workflow_run.head_sha }}"
+
+      - name: Deploy site (cosine-made)
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_WEB }}
+        run: |
+          echo "Triggering site deploy for commit ${{ github.event.workflow_run.head_sha }}"
+          curl -fsS -X POST "${HOOK}?ref=${{ github.event.workflow_run.head_sha }}"
