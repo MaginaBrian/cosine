@@ -14,6 +14,7 @@ const RIGHT = [
   { label: "Search" },
   { label: "About", to: "/about" },
   { label: "Contact", to: "/contact" },
+  { label: "Admin", to: "/admin" },
   { label: "Bag", to: "/bag" },
 ];
 

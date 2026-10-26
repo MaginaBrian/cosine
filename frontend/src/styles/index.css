@@ -1311,7 +1311,12 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   font-weight: 500;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  margin: 12px 0 72px;
+  margin: 12px 0 12px;
+}
+.checkout__required-note {
+  margin: 0 0 56px;
+  font-size: 12px;
+  color: #8a8a8a;
 }
 .checkout__status {
   margin: 48px 0 16px;
@@ -1419,15 +1424,16 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   margin-top: 3px;
   accent-color: var(--onyx);
 }
-.checkout__policy {
-  margin-top: 28px;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.72);
+.checkout__policy-check {
+  margin-top: 18px;
 }
-.checkout__policy a {
+.checkout__policy-check a {
   color: var(--onyx);
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+.checkout__optin.is-invalid span {
+  color: #8a2b2b;
 }
 .checkout__form-error {
   margin-top: 18px;
@@ -1522,4 +1528,198 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   .checkout__heading { margin-bottom: 40px; }
   .checkout__bar-row { align-items: stretch; flex-direction: column; }
   .checkout__continue { width: 100%; }
+}
+
+/* ---------- Admin orders ---------- */
+.admin {
+  min-height: calc(100vh - var(--nav-h));
+  padding: calc(var(--nav-h) + 40px) var(--edge) 80px;
+  background: #0a0a0a;
+  color: #fff;
+}
+.admin .eyebrow { color: #bdbdbd; }
+.admin__intro h1 {
+  font-size: clamp(36px, 6vw, 64px);
+  margin: 0 0 16px;
+  color: #fff;
+}
+.admin__intro p {
+  max-width: 62ch;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0;
+}
+.admin__intro-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.admin__actions {
+  display: flex;
+  gap: 12px;
+}
+.admin__actions button,
+.admin__login button,
+.admin-order__foot button {
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: transparent;
+  color: inherit;
+  padding: 10px 16px;
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.admin__login {
+  margin-top: 40px;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.admin__login label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.admin__login input {
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  background: transparent;
+  color: #fff;
+  padding: 10px 0;
+  font: inherit;
+  font-size: 16px;
+}
+.admin__login button {
+  align-self: flex-start;
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+.admin__error {
+  color: #ff8f8f;
+  margin: 16px 0 0;
+  font-size: 13px;
+}
+.admin__empty {
+  margin-top: 48px;
+  color: rgba(255, 255, 255, 0.65);
+}
+.admin__empty a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.admin__count {
+  margin: 36px 0 18px;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+.admin__list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.admin-order {
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 18px 18px 14px;
+}
+.admin-order--processing {
+  background: #000;
+  color: #fff;
+}
+.admin-order--production {
+  background: #1d4ed8;
+  color: #fff;
+  border-color: #1d4ed8;
+}
+.admin-order--stock {
+  background: #ea580c;
+  color: #fff;
+  border-color: #ea580c;
+}
+.admin-order--dispatch {
+  background: #15803d;
+  color: #fff;
+  border-color: #15803d;
+}
+.admin-order__head,
+.admin-order__who {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.admin-order__number {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.admin-order__when,
+.admin-order__who p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: inherit;
+  opacity: 0.92;
+}
+.admin-order__stage {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.admin-order__stage select {
+  min-width: 160px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.admin-order__stage option { color: #000; }
+.admin-order__who { margin-top: 18px; }
+.admin-order__total {
+  font-size: 16px !important;
+  font-weight: 600;
+}
+.admin-order__table-wrap {
+  margin-top: 18px;
+  overflow-x: auto;
+}
+.admin-order table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.admin-order th,
+.admin-order td {
+  text-align: left;
+  padding: 10px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+  white-space: nowrap;
+}
+.admin-order th {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.admin-order__foot {
+  margin-top: 14px;
+  display: flex;
+  justify-content: flex-end;
 }

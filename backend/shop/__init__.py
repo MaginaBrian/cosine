@@ -8,6 +8,7 @@ from flask import Flask, abort, request, send_from_directory
 from shop.cart import cart_bp
 from shop.catalog import catalog_bp
 from shop.checkout import checkout_bp
+from shop.orders import orders_bp
 
 DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
 
@@ -27,6 +28,7 @@ def create_app():
     app.register_blueprint(catalog_bp, url_prefix="/api")
     app.register_blueprint(cart_bp, url_prefix="/api")
     app.register_blueprint(checkout_bp, url_prefix="/api")
+    app.register_blueprint(orders_bp, url_prefix="/api")
     _allow_frontend(app, frontend_origin)
 
     @app.get("/api/health")
@@ -54,8 +56,8 @@ def _allow_frontend(app, origin):
         if request.method != "OPTIONS" or request.headers.get("Origin") != origin:
             return None
         response = app.make_default_options_response()
-        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
-        response.headers["Access-Control-Allow-Methods"] = "GET, POST, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, X-Admin-Key"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PATCH, DELETE, OPTIONS"
         return _headers(response)
 
     @app.after_request

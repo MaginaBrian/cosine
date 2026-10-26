@@ -26,12 +26,57 @@ const EMPTY = {
   company: "",
   taxId: "",
   marketing: false,
+  privacy: false,
 };
 
-function Field({ name, label, value, onChange, error, as = "input", children, autoComplete }) {
+const REQUIRED = {
+  name: "Enter your name.",
+  surname: "Enter your surname.",
+  region: "Choose a region.",
+  postCode: "Enter a post code.",
+  address: "Enter an address.",
+  house: "Enter a house number or name.",
+  town: "Enter a town.",
+  email: "Enter an email address.",
+  prefix: "Choose a prefix.",
+  telephone: "Enter a telephone number.",
+};
+
+const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validate(form) {
+  const problems = {};
+  for (const [key, message] of Object.entries(REQUIRED)) {
+    if (!String(form[key] || "").trim()) problems[key] = message;
+  }
+  if (form.email && !EMAIL.test(form.email.trim())) {
+    problems.email = "Enter a valid email address.";
+  }
+  const phone = String(form.telephone || "").replace(/\D/g, "");
+  if (form.telephone && (phone.length < 6 || phone.length > 15)) {
+    problems.telephone = "Enter a telephone number, digits only.";
+  }
+  if (form.business && !String(form.company || "").trim()) {
+    problems.company = "Enter the company name.";
+  }
+  if (!form.privacy) {
+    problems.privacy = "Confirm you have read the Privacy and Cookies Policy.";
+  }
+  return problems;
+}
+
+function Field({ name, label, value, onChange, error, as = "input", children, autoComplete, required = true }) {
   const control =
     as === "select" ? (
-      <select id={name} name={name} value={value} onChange={onChange} autoComplete={autoComplete}>
+      <select
+        id={name}
+        name={name}
+        value={value}
+        onChange={onChange}
+        autoComplete={autoComplete}
+        required={required}
+        aria-required={required ? "true" : undefined}
+      >
         {children}
       </select>
     ) : (
@@ -41,13 +86,18 @@ function Field({ name, label, value, onChange, error, as = "input", children, au
         value={value}
         onChange={onChange}
         autoComplete={autoComplete}
+        required={required}
+        aria-required={required ? "true" : undefined}
         aria-invalid={error ? "true" : undefined}
       />
     );
 
   return (
     <label className={`checkout__field ${error ? "is-invalid" : ""}`} htmlFor={name}>
-      <span>{label}</span>
+      <span>
+        {label}
+        {required ? " *" : ""}
+      </span>
       {control}
       {error && <em>{error}</em>}
     </label>
@@ -55,7 +105,7 @@ function Field({ name, label, value, onChange, error, as = "input", children, au
 }
 
 export default function CheckoutPage() {
-  const { cart, status } = useCart();
+  const { cart, status, refresh } = useCart();
   const [form, setForm] = useState(EMPTY);
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
@@ -68,7 +118,9 @@ export default function CheckoutPage() {
     apiFetch("/api/checkout")
       .then((response) => (response.ok ? response.json() : null))
       .then((draft) => {
-        if (!cancelled && draft?.delivery) setForm({ ...EMPTY, ...draft.delivery });
+        if (!cancelled && draft?.delivery) {
+          setForm({ ...EMPTY, ...draft.delivery, privacy: Boolean(draft.delivery.privacy) });
+        }
       })
       .catch(() => {});
     return () => {
@@ -91,6 +143,15 @@ export default function CheckoutPage() {
 
   const submit = async (event) => {
     event.preventDefault();
+    const problems = validate(form);
+    if (Object.keys(problems).length) {
+      setErrors(problems);
+      setFormError("Fill in every required field to continue.");
+      const first = Object.keys(problems)[0];
+      document.getElementById(first)?.focus();
+      return;
+    }
+
     setPending(true);
     setFormError("");
     try {
@@ -107,6 +168,7 @@ export default function CheckoutPage() {
       }
       setErrors({});
       setOrder(data);
+      refresh();
     } catch {
       setFormError("The shop API is not responding. Start it with npm run api, then try again.");
     } finally {
@@ -145,8 +207,11 @@ export default function CheckoutPage() {
     const { delivery } = order;
     return (
       <div className="checkout">
-        <h1 className="checkout__heading">Delivery details saved</h1>
+        <h1 className="checkout__heading">Order placed</h1>
         <div className="checkout__saved">
+          <p>
+            Order {order.number} is in {order.stage || "Processing"}.
+          </p>
           <p>
             {delivery.name} {delivery.surname}
             <br />
@@ -179,6 +244,7 @@ export default function CheckoutPage() {
   return (
     <form className="checkout" onSubmit={submit} noValidate>
       <h1 className="checkout__heading">Please enter the delivery details</h1>
+      <p className="checkout__required-note">Fields marked * are required.</p>
 
       <div className="checkout__grid">
         <Field name="name" label="Name" value={form.name} onChange={update} error={errors.name} autoComplete="given-name" />
@@ -232,7 +298,7 @@ export default function CheckoutPage() {
       {form.business && (
         <div className="checkout__grid checkout__business">
           <Field name="company" label="Company" value={form.company} onChange={update} error={errors.company} autoComplete="organization" />
-          <Field name="taxId" label="Tax id" value={form.taxId} onChange={update} error={errors.taxId} />
+          <Field name="taxId" label="Tax id" value={form.taxId} onChange={update} error={errors.taxId} required={false} />
         </div>
       )}
 
@@ -245,9 +311,25 @@ export default function CheckoutPage() {
         <span>I want to receive personalised commercial communications from Cosine Made by email.</span>
       </label>
 
-      <p className="checkout__policy">
-        I have read and understand the <Link to="/privacy">Privacy and Cookies Policy</Link>.
-      </p>
+      <label className={`checkout__optin checkout__policy-check ${errors.privacy ? "is-invalid" : ""}`} htmlFor="privacy">
+        <input
+          id="privacy"
+          type="checkbox"
+          checked={form.privacy}
+          required
+          aria-required="true"
+          aria-invalid={errors.privacy ? "true" : undefined}
+          onChange={(event) => {
+            setForm((current) => ({ ...current, privacy: event.target.checked }));
+            setErrors((current) => ({ ...current, privacy: undefined }));
+            setFormError("");
+          }}
+        />
+        <span>
+          I have read and understand the <Link to="/privacy">Privacy and Cookies Policy</Link>. *
+        </span>
+      </label>
+      {errors.privacy && <p className="checkout__form-error">{errors.privacy}</p>}
 
       {formError && <p className="checkout__form-error">{formError}</p>}
 

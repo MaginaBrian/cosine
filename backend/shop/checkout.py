@@ -1,11 +1,10 @@
 """Checkout module: delivery details for the current bag."""
 
 import re
-import uuid
 
 from flask import Blueprint, jsonify, request, session
 
-from shop.catalog import money_exact
+from shop.orders import place_order
 
 checkout_bp = Blueprint("checkout", __name__)
 
@@ -32,6 +31,7 @@ def _clean(body):
         delivery[key] = str(body.get(key, "")).strip()
     delivery["business"] = bool(body.get("business"))
     delivery["marketing"] = bool(body.get("marketing"))
+    delivery["privacy"] = bool(body.get("privacy"))
     delivery["telephone"] = re.sub(r"\D", "", delivery["telephone"])
     return delivery
 
@@ -47,29 +47,9 @@ def _problems(delivery):
         problems["telephone"] = "Enter a telephone number, digits only."
     if delivery["business"] and not delivery["company"]:
         problems["company"] = "Enter the company name."
+    if not delivery.get("privacy"):
+        problems["privacy"] = "Confirm you have read the Privacy and Cookies Policy."
     return problems
-
-
-def _order(delivery, lines):
-    subtotal = sum(line["price"] * line["qty"] for line in lines)
-    return {
-        "id": uuid.uuid4().hex,
-        "delivery": delivery,
-        "count": sum(line["qty"] for line in lines),
-        "subtotal": subtotal,
-        "subtotalLabel": money_exact(subtotal),
-        "lines": [
-            {
-                "id": line["id"],
-                "title": line["title"],
-                "color": line["color"],
-                "size": line["size"],
-                "qty": line["qty"],
-                "priceExact": line["priceExact"],
-            }
-            for line in lines
-        ],
-    }
 
 
 @checkout_bp.get("/checkout")
@@ -91,7 +71,17 @@ def save_checkout():
     if problems:
         return jsonify({"error": "Check the delivery details.", "fields": problems}), 400
 
-    order = _order(delivery, lines)
-    session["checkout"] = order
+    order = place_order(delivery, lines)
+    session["checkout"] = {
+        "id": order["id"],
+        "number": order["number"],
+        "stage": order["stage"],
+        "delivery": order["delivery"],
+        "count": order["count"],
+        "subtotal": order["subtotal"],
+        "subtotalLabel": order["subtotalLabel"],
+        "lines": order["lines"],
+    }
+    session["cart"] = []
     session.modified = True
-    return jsonify(order)
+    return jsonify(session["checkout"])

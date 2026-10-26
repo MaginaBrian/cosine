@@ -10,6 +10,7 @@ import CheckoutPage from "@/features/checkout/CheckoutPage";
 import AboutPage from "@/features/studio/AboutPage";
 import ContactPage from "@/features/studio/ContactPage";
 import PrivacyPage from "@/features/studio/PrivacyPage";
+import AdminPage from "@/features/admin/AdminPage";
 
 export default function AppRoutes() {
   return (
@@ -25,6 +26,7 @@ export default function AppRoutes() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/admin" element={<AdminPage />} />
     </Routes>
   );
 }

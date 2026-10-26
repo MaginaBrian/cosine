@@ -6,6 +6,7 @@ import AppRoutes from "@/app/routes";
 
 export default function App() {
   const { pathname } = useLocation();
+  const studio = pathname === "/checkout" || pathname === "/admin";
 
   return (
     <>
@@ -14,7 +15,7 @@ export default function App() {
       <main>
         <AppRoutes />
       </main>
-      {pathname !== "/checkout" && <Footer />}
+      {!studio && <Footer />}
     </>
   );
 }

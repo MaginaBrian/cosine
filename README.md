@@ -48,6 +48,10 @@ Connect the GitHub repo itself, not a public clone URL. Render only sees the Act
 - `/collections` — the full catalog in one place with All / Men / Women tabs
 - `/about` — the brand story, as its own page
 - `/contact` — studio contact details
+- `/admin` — studio order list (Processing / Production / Stock / Dispatch)
+
+Studio admin key defaults to `cosine-studio` locally. Set `ADMIN_KEY` in the
+environment on Render.
 
 Routing is handled by `react-router-dom`. Because this is a client-side
 router, always run it through `npm run dev` or `npm run build` + `npm run
