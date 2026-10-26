@@ -7,8 +7,8 @@ export default function RequireAuth({ children, admin = false }) {
 
   if (status === "loading") {
     return (
-      <div className="page-banner">
-        <p className="product-grid__empty">Checking your account…</p>
+      <div className="account">
+        <p className="account__status">Checking your account…</p>
       </div>
     );
   }
@@ -19,7 +19,7 @@ export default function RequireAuth({ children, admin = false }) {
   }
 
   if (admin && !isAdmin) {
-    return <Navigate to="/account" replace />;
+    return <Navigate to="/account?denied=studio" replace />;
   }
 
   return children;

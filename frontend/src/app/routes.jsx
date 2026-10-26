@@ -38,7 +38,14 @@ export default function AppRoutes() {
       <Route path="/about" element={<AboutPage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/contact" element={<ContactPage />} />
-      <Route path="/admin" element={<AdminPage />} />
+      <Route
+        path="/admin"
+        element={
+          <RequireAuth admin>
+            <AdminPage />
+          </RequireAuth>
+        }
+      />
     </Routes>
   );
 }

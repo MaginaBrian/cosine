@@ -3,7 +3,8 @@ import Emblem from "@/layout/Emblem";
 import { useAuth } from "@/features/account/auth";
 
 export default function Footer() {
-  const { isAdmin } = useAuth();
+  const { status, isAdmin } = useAuth();
+  const showStudio = status === "ready" && isAdmin;
 
   return (
     <footer className="footer">
@@ -52,7 +53,7 @@ export default function Footer() {
               <Link to="/about">About</Link>
               <br />
               <Link to="/account">Account</Link>
-              {isAdmin && (
+              {showStudio && (
                 <>
                   <br />
                   <Link to="/admin">Orders</Link>

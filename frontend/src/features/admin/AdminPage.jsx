@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiFetch } from "@/lib/http";
 import { useAuth } from "@/features/account/auth";
-import RequireAuth from "@/features/account/RequireAuth";
 
 const STAGES = ["Processing", "Production", "Stock", "Dispatch"];
 
@@ -234,9 +233,6 @@ function AdminOrders() {
 }
 
 export default function AdminPage() {
-  return (
-    <RequireAuth admin>
-      <AdminOrders />
-    </RequireAuth>
-  );
+  // Route already wraps RequireAuth admin; keep a hard gate here too.
+  return <AdminOrders />;
 }

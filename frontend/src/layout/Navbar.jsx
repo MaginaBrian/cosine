@@ -46,12 +46,14 @@ export default function Navbar() {
   const closeTimer = useRef(null);
   const { pathname } = useLocation();
   const { cart } = useCart();
-  const { isAdmin } = useAuth();
+  const { status, isAdmin } = useAuth();
   const onHome = pathname === "/";
   const menuOpen = Boolean(openMenu);
   const clear = onHome && !scrolled && !open && !menuOpen;
+  // Studio link only after auth is confirmed admin — never for guests or customers.
+  const showStudio = status === "ready" && isAdmin;
 
-  const right = isAdmin
+  const right = showStudio
     ? [
         { label: "Search" },
         { label: "Account", to: "/account" },

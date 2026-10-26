@@ -12,6 +12,7 @@ export default function AccountPage() {
   const navigate = useNavigate();
   const next = params.get("next") || "/";
   const studioNext = next === "/admin" || next.startsWith("/admin?");
+  const deniedStudio = params.get("denied") === "studio";
 
   const update = (event) => {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
@@ -78,10 +79,13 @@ export default function AccountPage() {
           </p>
         </div>
         <div className="account__panel">
-          {isAdmin && (
+          {status === "ready" && isAdmin && (
             <Link to="/admin" className="account__cta">
               Open studio orders
             </Link>
+          )}
+          {status === "ready" && !isAdmin && deniedStudio && (
+            <p className="account__error">Studio orders are limited to admin accounts.</p>
           )}
           {next === "/checkout" && (
             <Link to="/checkout" className="account__cta">
@@ -102,12 +106,17 @@ export default function AccountPage() {
         <span className="eyebrow">Account</span>
         <h1>{mode === "login" ? "Sign in." : "Create an account."}</h1>
         <p>
-          {studioNext
-            ? "Sign in with the studio account to open orders. Customers should use a regular account."
-            : next === "/checkout"
-              ? "Create an account or sign in before checkout. You can browse and fill the bag freely."
-              : "Sign in to manage checkout, or create an account if you are new. Studio staff can open orders after signing in."}
+          {deniedStudio
+            ? "Studio orders are for admin accounts only. Sign in with the studio email to continue."
+            : studioNext
+              ? "Sign in with the studio account to open orders. Customers should use a regular account."
+              : next === "/checkout"
+                ? "Create an account or sign in before checkout. You can browse and fill the bag freely."
+                : "Sign in to manage checkout, or create an account if you are new. Studio staff can open orders after signing in."}
         </p>
+        {deniedStudio && (
+          <p className="account__error">That page is restricted to studio admins.</p>
+        )}
       </div>
 
       <div className="account__tabs">
