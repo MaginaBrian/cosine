@@ -186,14 +186,17 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
 .nav__item { position: relative; }
 .nav__dropdown {
   position: absolute;
-  top: calc(100% + 14px);
+  top: calc(100% + 10px);
   left: 0;
   transform: translateY(-6px);
-  min-width: 190px;
-  background: var(--pearl);
-  border: 1px solid rgba(0,0,0,0.1);
-  box-shadow: 0 20px 44px rgba(0,0,0,0.25);
-  padding: 12px 0;
+  min-width: 200px;
+  /* Clear glass panel — hero shows through, like Fear of God. */
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: none;
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  padding: 14px 0;
   display: flex;
   flex-direction: column;
   opacity: 0;
@@ -207,21 +210,25 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   transform: translateY(0);
 }
 .nav__dropdown a {
-  padding: 9px 22px;
+  padding: 10px 22px;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(0,0,0,0.65);
+  color: var(--pearl);
   white-space: nowrap;
+  background: transparent;
 }
-.nav__dropdown a:hover { color: var(--onyx); background: var(--marble); }
+.nav__dropdown a:hover {
+  color: var(--pearl);
+  background: rgba(255, 255, 255, 0.1);
+}
 .nav__dropdown-all {
   margin-top: 6px;
-  padding-top: 13px !important;
-  border-top: 1px solid rgba(0,0,0,0.08);
-  font-weight: 700 !important;
-  color: var(--velvet) !important;
+  padding-top: 14px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  font-weight: 600 !important;
+  color: var(--pearl) !important;
 }
 
 /* ---------- Hero ---------- */
