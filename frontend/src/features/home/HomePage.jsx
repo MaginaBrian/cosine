@@ -1,5 +1,4 @@
 import Hero from "./Hero";
-import Marquee from "./Marquee";
 import GenderSplit from "./GenderSplit";
 import Lookbook from "./Lookbook";
 import Philosophy from "./Philosophy";
@@ -11,7 +10,6 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <Marquee />
       <Reveal>
         <GenderSplit />
       </Reveal>
