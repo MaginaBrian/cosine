@@ -45,7 +45,6 @@ export default function Footer() {
           <Link to="/contact">Contact</Link>
           <a href="mailto:studio@cosinemade.com">Client services</a>
           <Link to="/privacy">Legal notices</Link>
-          <Link to="/purpose">Purpose</Link>
           <a href="https://instagram.com" target="_blank" rel="noreferrer">
             Social
           </a>
