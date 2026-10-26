@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { MEN_TYPES, WOMEN_TYPES } from "@/content/images";
 import { useCart } from "@/features/bag/cart";
@@ -16,35 +16,25 @@ const RIGHT = [
   { label: "Bag", to: "/bag" },
 ];
 
-function NavItem({ item, openMenu, setOpenMenu, bagCount }) {
+const CLOSE_DELAY_MS = 380;
+
+function NavItem({ item, openMenu, onEnter, onLeave, bagCount }) {
   if (!item.to) {
-    // Decorative, non-routed item (e.g. Search).
     return <span className="nav__static">{item.label}</span>;
   }
 
+  const active = item.menu && openMenu === item.label;
+
   return (
     <div
-      className="nav__item"
-      onMouseEnter={() => item.menu && setOpenMenu(item.label)}
-      onMouseLeave={() => item.menu && setOpenMenu(null)}
+      className={`nav__item${active ? " is-active" : ""}`}
+      onMouseEnter={() => item.menu && onEnter(item.label)}
+      onMouseLeave={() => item.menu && onLeave()}
     >
       <NavLink to={item.to}>
         {item.label}
         {item.to === "/bag" && bagCount > 0 ? ` (${bagCount})` : ""}
       </NavLink>
-
-      {item.menu && (
-        <div className={`nav__dropdown ${openMenu === item.label ? "is-open" : ""}`}>
-          {item.menu.map((type) => (
-            <Link key={type} to={`${item.menuBase}?type=${encodeURIComponent(type)}`}>
-              {type}
-            </Link>
-          ))}
-          <Link to={item.menuBase} className="nav__dropdown-all">
-            View all
-          </Link>
-        </div>
-      )}
     </div>
   );
 }
@@ -53,11 +43,13 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
   const [scrolled, setScrolled] = useState(false);
+  const closeTimer = useRef(null);
   const { pathname } = useLocation();
   const { cart } = useCart();
   const { isAdmin } = useAuth();
   const onHome = pathname === "/";
-  const clear = onHome && !scrolled && !open;
+  const menuOpen = Boolean(openMenu);
+  const clear = onHome && !scrolled && !open && !menuOpen;
 
   const right = isAdmin
     ? [
@@ -68,10 +60,32 @@ export default function Navbar() {
       ]
     : RIGHT;
 
+  const activeItem = LEFT.find((item) => item.label === openMenu);
+
+  const cancelClose = () => {
+    if (closeTimer.current) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+
+  const openMenuNow = (label) => {
+    cancelClose();
+    setOpenMenu(label);
+  };
+
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimer.current = setTimeout(() => setOpenMenu(null), CLOSE_DELAY_MS);
+  };
+
   useEffect(() => {
     setOpen(false);
     setOpenMenu(null);
+    cancelClose();
   }, [pathname]);
+
+  useEffect(() => () => cancelClose(), []);
 
   useEffect(() => {
     if (!onHome) {
@@ -86,11 +100,28 @@ export default function Navbar() {
   }, [onHome]);
 
   return (
-    <header className={`nav ${clear ? "nav--clear" : "nav--solid"}${open ? " is-open" : ""}`}>
+    <header
+      className={[
+        "nav",
+        clear ? "nav--clear" : "nav--solid",
+        menuOpen ? "nav--menu-open" : "",
+        open ? "is-open" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      onMouseLeave={scheduleClose}
+    >
       <div className="nav__row nav__row--primary">
         <nav className="nav__links nav__links--left">
           {LEFT.map((item) => (
-            <NavItem key={item.to} item={item} openMenu={openMenu} setOpenMenu={setOpenMenu} bagCount={cart.count} />
+            <NavItem
+              key={item.to}
+              item={item}
+              openMenu={openMenu}
+              onEnter={openMenuNow}
+              onLeave={scheduleClose}
+              bagCount={cart.count}
+            />
           ))}
         </nav>
 
@@ -100,7 +131,14 @@ export default function Navbar() {
 
         <nav className="nav__links nav__links--right">
           {right.map((item) => (
-            <NavItem key={item.to || item.label} item={item} openMenu={openMenu} setOpenMenu={setOpenMenu} bagCount={cart.count} />
+            <NavItem
+              key={item.to || item.label}
+              item={item}
+              openMenu={openMenu}
+              onEnter={openMenuNow}
+              onLeave={scheduleClose}
+              bagCount={cart.count}
+            />
           ))}
         </nav>
 
@@ -113,6 +151,33 @@ export default function Navbar() {
           <span />
         </button>
       </div>
+
+      {activeItem?.menu && (
+        <div
+          className="nav__panel"
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
+        >
+          <div className="nav__panel-inner">
+            {activeItem.menu.map((type) => (
+              <Link
+                key={type}
+                to={`${activeItem.menuBase}?type=${encodeURIComponent(type)}`}
+                onClick={() => setOpenMenu(null)}
+              >
+                {type}
+              </Link>
+            ))}
+            <Link
+              to={activeItem.menuBase}
+              className="nav__panel-all"
+              onClick={() => setOpenMenu(null)}
+            >
+              View all
+            </Link>
+          </div>
+        </div>
+      )}
 
       <div className={`nav__mobile ${open ? "is-open" : ""}`}>
         {[...LEFT, ...right.filter((item) => item.to)].map((item) => (
