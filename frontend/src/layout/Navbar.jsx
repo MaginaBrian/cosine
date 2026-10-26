@@ -55,7 +55,7 @@ export default function Navbar() {
     ? [
         { label: "Search" },
         { label: "Account", to: "/account" },
-        { label: "Orders", to: "/admin" },
+        { label: "Studio", to: "/admin" },
         { label: "Bag", to: "/bag" },
       ]
     : RIGHT;

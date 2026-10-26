@@ -2,7 +2,7 @@
 const u = (id, w = 1600) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=85`;
 
-// Full-bleed landing hero — dark, high-contrast campaign energy.
+// Full-bleed AXIS landing hero.
 export const heroImage = u("photo-1529139574466-a303027c1d8b", 2400);
 
 // Large chooser panels on the homepage.
@@ -15,9 +15,55 @@ export const WOMEN_TYPES = ["Outerwear", "Tops", "Bottoms"];
 export const KIDS_TYPES = ["Outerwear", "Tops", "Bottoms"];
 
 /**
+ * Kith-style home collections: campaign + four look tiles.
+ * `productId` is optional — bag icon routes to that PDP when set.
+ */
+export const homeCollections = [
+  {
+    id: "axis",
+    title: "AXIS",
+    kicker: "Collection One · 2026",
+    href: "/collections",
+    looks: [
+      { src: u("photo-1505022610480-028101dfd732", 1100), productId: "m1", alt: "AXIS — structured outerwear" },
+      { src: u("photo-1617137968427-85924c800a22", 1100), productId: "m3", alt: "AXIS — tailored layering" },
+      { src: u("photo-1552374196-c4e7ffc6e126", 1100), productId: "m6", alt: "AXIS — merino knit" },
+      { src: u("photo-1488161628813-0885872a41fc", 1100), productId: "m2", alt: "AXIS — wide trouser" },
+    ],
+  },
+  {
+    id: "summer",
+    title: "Summer",
+    kicker: "Collection Two · 2026",
+    copy: "Light cloth, open air, pieces cut for heat and late light.",
+    banner: u("photo-1509631179647-0177331693ae", 2400),
+    href: "/featured",
+    looks: [
+      { src: u("photo-1515886657613-9f3515b0c78f", 1100), productId: "w3", alt: "Summer — silk slip" },
+      { src: u("photo-1496747611176-843222e1e57c", 1100), productId: "w1", alt: "Summer — knit cardigan" },
+      { src: u("photo-1469334031218-e382a71b716b", 1100), productId: "w5", alt: "Summer — wide trousers" },
+      { src: u("photo-1490481651871-ab68de25d43d", 1100), productId: "w2", alt: "Summer — straight denim" },
+    ],
+  },
+  {
+    id: "essentials",
+    title: "Essentials",
+    kicker: "Everyday · Always",
+    copy: "The quiet staples — worn hard, kept close, never overdone.",
+    banner: u("photo-1441984904996-e0b6ba687e04", 2400),
+    href: "/collections",
+    looks: [
+      { src: u("photo-1521572163474-6864f9cf17ab", 1100), productId: "m4", alt: "Essentials — boxy tee" },
+      { src: u("photo-1489987707025-afc232f7ea0f", 1100), productId: "m3", alt: "Essentials — overshirt" },
+      { src: u("photo-1485968579580-b6d095142e6e", 1100), productId: "w4", alt: "Essentials — tailored vest" },
+      { src: u("photo-1503342217505-b0a15ec3261c", 1100), productId: "w6", alt: "Essentials — relaxed trench" },
+    ],
+  },
+];
+
+/**
  * Shop by Colour stories (TALA-style).
  * `match` is matched against product colour names (case-insensitive).
- * `looks` are the four lifestyle frames shown when a colour is selected.
  */
 export const colourStories = [
   {

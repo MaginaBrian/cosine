@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import Emblem from "@/layout/Emblem";
+import { useAuth } from "@/features/account/auth";
 
 export default function Footer() {
+  const { isAdmin } = useAuth();
+
   return (
     <footer className="footer">
       <div className="footer__top">
@@ -49,6 +52,12 @@ export default function Footer() {
               <Link to="/about">About</Link>
               <br />
               <Link to="/account">Account</Link>
+              {isAdmin && (
+                <>
+                  <br />
+                  <Link to="/admin">Orders</Link>
+                </>
+              )}
             </p>
           </div>
         </div>

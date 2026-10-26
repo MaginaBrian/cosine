@@ -11,6 +11,7 @@ export default function AccountPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const next = params.get("next") || "/";
+  const studioNext = next === "/admin" || next.startsWith("/admin?");
 
   const update = (event) => {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }));
@@ -29,19 +30,26 @@ export default function AccountPage() {
     setPending(true);
     setError("");
     try {
+      let signedIn;
       if (mode === "login") {
-        await login(form.email, form.password);
+        signedIn = await login(form.email, form.password);
       } else {
         const problem = passwordProblem(form.password, form.confirmPassword);
         if (problem) throw new Error(problem);
-        await register({
+        signedIn = await register({
           name: form.name,
           email: form.email,
           password: form.password,
           confirmPassword: form.confirmPassword,
         });
       }
-      navigate(next.startsWith("/") ? next : "/", { replace: true });
+      const destination = next.startsWith("/") ? next : "/";
+      // Studio staff landing on a generic next path still get a clear way into orders.
+      if (signedIn?.role === "admin" && (destination === "/" || destination === "/account")) {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate(destination, { replace: true });
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -72,7 +80,7 @@ export default function AccountPage() {
         <div className="account__panel">
           {isAdmin && (
             <Link to="/admin" className="account__cta">
-              Studio orders
+              Open studio orders
             </Link>
           )}
           {next === "/checkout" && (
@@ -94,9 +102,11 @@ export default function AccountPage() {
         <span className="eyebrow">Account</span>
         <h1>{mode === "login" ? "Sign in." : "Create an account."}</h1>
         <p>
-          {next === "/checkout"
-            ? "Create an account or sign in before checkout. You can browse and fill the bag freely."
-            : "Sign in to manage checkout, or create an account if you are new."}
+          {studioNext
+            ? "Sign in with the studio account to open orders. Customers should use a regular account."
+            : next === "/checkout"
+              ? "Create an account or sign in before checkout. You can browse and fill the bag freely."
+              : "Sign in to manage checkout, or create an account if you are new. Studio staff can open orders after signing in."}
         </p>
       </div>
 

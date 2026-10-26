@@ -41,7 +41,8 @@ def _admin_email():
 
 
 def _admin_password():
-    return os.environ.get("ADMIN_PASSWORD", "StudioAdmin!")
+    # Empty env (common on Render when sync:false is unset) must not win over the default.
+    return (os.environ.get("ADMIN_PASSWORD") or "").strip() or "StudioAdmin!"
 
 
 def _load():
@@ -86,14 +87,26 @@ def _token(user):
 
 
 def ensure_admin_user():
-    """Create the studio admin account if it is missing."""
+    """Create or repair the studio admin account so /admin stays reachable."""
     with _LOCK:
         users = _load()
         email = _admin_email()
+        password = _admin_password()
         existing = next((user for user in users if user["email"] == email), None)
         if existing:
+            changed = False
             if existing.get("role") != "admin":
                 existing["role"] = "admin"
+                changed = True
+            try:
+                password_ok = _check(password, existing.get("passwordHash", ""))
+            except (ValueError, TypeError):
+                password_ok = False
+            # If ADMIN_PASSWORD is set in the environment, keep the hash aligned with it.
+            if not password_ok and (os.environ.get("ADMIN_PASSWORD") or "").strip():
+                existing["passwordHash"] = _hash(password)
+                changed = True
+            if changed:
                 _save(users)
             return
         users.append(
@@ -101,7 +114,7 @@ def ensure_admin_user():
                 "id": uuid.uuid4().hex,
                 "email": email,
                 "name": "Studio Admin",
-                "passwordHash": _hash(_admin_password()),
+                "passwordHash": _hash(password),
                 "role": "admin",
                 "createdAt": datetime.now(timezone.utc).isoformat(),
             }
