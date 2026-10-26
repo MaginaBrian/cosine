@@ -1,7 +1,6 @@
 import { homeCollections } from "@/content/images";
 import Hero from "./Hero";
 import CampaignBlock from "./CampaignBlock";
-import GenderSplit from "./GenderSplit";
 import ShopByColour from "./ShopByColour";
 import Philosophy from "./Philosophy";
 import Craft from "./Craft";
@@ -17,9 +16,6 @@ export default function Home() {
       {followOns.map((collection) => (
         <CampaignBlock key={collection.id} collection={collection} />
       ))}
-      <Reveal>
-        <GenderSplit />
-      </Reveal>
       <ShopByColour />
       <Reveal>
         <Philosophy />

@@ -21,7 +21,7 @@ services:
       - key: ADMIN_EMAIL
         value: studio@cosinemade.com
       - key: ADMIN_PASSWORD
-        sync: false
+        value: "StudioAdmin!"
       - key: FRONTEND_ORIGIN
         fromService:
           type: web

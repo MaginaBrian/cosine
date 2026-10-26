@@ -102,8 +102,8 @@ def ensure_admin_user():
                 password_ok = _check(password, existing.get("passwordHash", ""))
             except (ValueError, TypeError):
                 password_ok = False
-            # If ADMIN_PASSWORD is set in the environment, keep the hash aligned with it.
-            if not password_ok and (os.environ.get("ADMIN_PASSWORD") or "").strip():
+            # Repair mismatched hashes (e.g. Render created the account with an empty password).
+            if not password_ok:
                 existing["passwordHash"] = _hash(password)
                 changed = True
             if changed:

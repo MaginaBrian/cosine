@@ -40,8 +40,8 @@ PRODUCTS = [
             "Dry clean",
         ],
         "images": [
-            _photo("photo-1617137968427-85924c800a22"),
-            _photo("photo-1507679799987-c73779587ccf"),
+            _photo("photo-1614252369475-531eba835eb1"),
+            _photo("photo-1531384441138-2736e62e0919"),
             _photo("photo-1520975954732-35dd22299614"),
             _photo("photo-1558171813-4c088753af8f"),
         ],
@@ -94,10 +94,10 @@ PRODUCTS = [
             "Machine wash cold, hang dry",
         ],
         "images": [
-            _photo("photo-1505022610480-028101dfd732"),
-            _photo("photo-1489987707025-afc232f7ea0f"),
+            _photo("photo-1522529599102-193c0d76b5b6"),
+            _photo("photo-1463453091185-61582044d556"),
             _photo("photo-1521572163474-6864f9cf17ab"),
-            _photo("photo-1523381210434-271e8be1f52b"),
+            _photo("photo-1492562080023-ab3db95bfbce"),
         ],
     },
     {
@@ -256,10 +256,10 @@ PRODUCTS = [
             "Dry clean",
         ],
         "images": [
-            _photo("photo-1515886657613-9f3515b0c78f"),
-            _photo("photo-1496747611176-843222e1e57c"),
-            _photo("photo-1490481651871-ab68de25d43d"),
-            _photo("photo-1469334031218-e382a71b716b"),
+            _photo("photo-1524504388940-b1c1722653e1"),
+            _photo("photo-1488426862026-3ee34a7d66df"),
+            _photo("photo-1594737625785-a6cbdabd333c"),
+            _photo("photo-1531123897727-8f129e1688ce"),
         ],
     },
     {
@@ -337,9 +337,9 @@ PRODUCTS = [
             "Dry clean",
         ],
         "images": [
-            _photo("photo-1487222477894-8943e31ef7b2"),
-            _photo("photo-1469334031218-e382a71b716b"),
-            _photo("photo-1490114538077-0a7f8cb49891"),
+            _photo("photo-1596015301017-471ad3599a30"),
+            _photo("photo-1634826225912-905141f688f3"),
+            _photo("photo-1634826260499-7d97a6049913"),
             _photo("photo-1524504388940-b1c1722653e1"),
         ],
     },
