@@ -28,6 +28,9 @@ export default function ColourPage() {
       <div className="colour-page__head">
         <p className="colour-page__kicker">Shop By Colour</p>
         <h1>/ {story.name}</h1>
+        {status === "ready" && (
+          <p className="colour-page__count">{matched.length} pieces</p>
+        )}
       </div>
 
       <div className="colour-page__looks">

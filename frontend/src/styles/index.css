@@ -863,11 +863,17 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
 }
 
 .shop-colour__arrow {
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
   font-size: 28px;
   line-height: 1;
-  opacity: 0.55;
+  color: inherit;
+  opacity: 0.45;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
+.shop-colour__arrow.is-ready,
 .shop-colour__arrow:hover {
   opacity: 1;
   transform: translateX(4px);
@@ -1043,12 +1049,25 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   padding: 24px var(--edge) 8px;
 }
 .colour-reveal__cta {
+  border: 0;
+  background: none;
+  padding: 0 0 2px;
+  cursor: pointer;
+  font: inherit;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: inherit;
   border-bottom: 1px solid currentColor;
-  padding-bottom: 2px;
+}
+
+.colour-page__count {
+  margin: 10px 0 0;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.55;
 }
 
 @media (max-width: 860px) {

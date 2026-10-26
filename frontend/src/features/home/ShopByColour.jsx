@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { colourStories, productMatchesColour } from "@/content/images";
 import { useCatalog } from "@/features/catalog/api";
 import Reveal from "./Reveal";
@@ -7,6 +7,7 @@ import Reveal from "./Reveal";
 export default function ShopByColour() {
   const [activeSlug, setActiveSlug] = useState(null);
   const { products } = useCatalog();
+  const navigate = useNavigate();
   const active = colourStories.find((story) => story.slug === activeSlug) || null;
 
   const matched = useMemo(() => {
@@ -28,13 +29,33 @@ export default function ShopByColour() {
     return () => document.body.classList.remove("colour-open");
   }, [active]);
 
+  const openColourShop = (story) => {
+    if (!story) return;
+    setActiveSlug(story.slug);
+    navigate(`/colour/${story.slug}`);
+  };
+
   return (
     <Reveal as="section" className="shop-colour">
       <div className="shop-colour__head">
         <h2>/ Shop By Colour</h2>
-        <Link to="/collections" className="shop-colour__arrow" aria-label="Browse all collections">
+        <button
+          type="button"
+          className={`shop-colour__arrow${active ? " is-ready" : ""}`}
+          aria-label={
+            active ? `Shop all ${active.name} pieces` : "Choose a colour, then open its full shop"
+          }
+          title={active ? `Shop all ${active.name}` : "Select a colour first"}
+          onClick={() => {
+            if (active) openColourShop(active);
+            else {
+              // Nudge: open the first tone if nothing is selected yet.
+              openColourShop(colourStories[0]);
+            }
+          }}
+        >
           →
-        </Link>
+        </button>
       </div>
 
       <div className="shop-colour__rail">
@@ -44,6 +65,7 @@ export default function ShopByColour() {
             type="button"
             className={`shop-colour__tile${activeSlug === story.slug ? " is-active" : ""}`}
             onClick={() => setActiveSlug(activeSlug === story.slug ? null : story.slug)}
+            onDoubleClick={() => openColourShop(story)}
           >
             <span
               className="shop-colour__swatch"
@@ -92,9 +114,9 @@ export default function ShopByColour() {
           )}
 
           <div className="colour-reveal__foot">
-            <Link to={`/colour/${active.slug}`} className="colour-reveal__cta">
-              Shop {active.name} →
-            </Link>
+            <button type="button" className="colour-reveal__cta" onClick={() => openColourShop(active)}>
+              Shop all {active.name} →
+            </button>
           </div>
         </div>
       )}
