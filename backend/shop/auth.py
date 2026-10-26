@@ -41,7 +41,7 @@ def _admin_email():
 
 
 def _admin_password():
-    return os.environ.get("ADMIN_PASSWORD", "cosine-studio")
+    return os.environ.get("ADMIN_PASSWORD", "StudioAdmin!")
 
 
 def _load():

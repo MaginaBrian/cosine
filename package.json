@@ -4,6 +4,7 @@
   "scripts": {
     "dev": "npm --prefix frontend run dev",
     "api": "backend/.venv/bin/python backend/app.py",
+    "seed": "backend/.venv/bin/python backend/seed.py",
     "build": "npm --prefix frontend run build",
     "lint": "npm --prefix frontend run lint",
     "preview": "npm --prefix frontend run preview"

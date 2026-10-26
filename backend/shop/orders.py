@@ -9,6 +9,7 @@ from flask import Blueprint, jsonify, request
 
 from shop.auth import require_admin
 from shop.catalog import money_exact
+from shop.inventory import reserve_for_order
 
 orders_bp = Blueprint("orders", __name__)
 
@@ -101,6 +102,27 @@ def update_order(order_id):
         order = next((item for item in orders if item["id"] == order_id), None)
         if order is None:
             return jsonify({"error": "Order not found."}), 404
+
+        if stage == "Stock" and not order.get("stockCheck", {}).get("reserved"):
+            ok, stock_check = reserve_for_order(order.get("lines") or [])
+            order["stockCheck"] = stock_check
+            if not ok:
+                _save(orders)
+                return jsonify(
+                    {
+                        "error": "Stock does not match this order. Check colour, size, and quantity on hand.",
+                        "stockCheck": stock_check,
+                        "order": order,
+                    }
+                ), 409
+
+        if stage == "Dispatch" and not order.get("stockCheck", {}).get("reserved"):
+            return jsonify(
+                {
+                    "error": "Move the order to Stock first so the pieces can be matched and reserved.",
+                }
+            ), 400
+
         order["stage"] = stage
         order["updatedAt"] = _now()
         _save(orders)

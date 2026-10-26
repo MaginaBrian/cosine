@@ -59,11 +59,20 @@ function AdminOrders() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ stage }),
     });
+    const data = await response.json().catch(() => ({}));
     if (!response.ok) {
-      setOrders(previous);
-      const data = await response.json().catch(() => ({}));
+      setOrders(
+        data.order
+          ? previous.map((order) => (order.id === orderId ? data.order : order))
+          : previous
+      );
       setError(data.error || "Could not update the stage.");
+      return;
     }
+    setOrders((current) =>
+      current.map((order) => (order.id === orderId ? data : order))
+    );
+    setError("");
   };
 
   const remove = async (orderId) => {
@@ -85,8 +94,8 @@ function AdminOrders() {
             <span className="eyebrow">Studio</span>
             <h1>All orders.</h1>
             <p>
-              Processing stays black and white. Production turns the row blue. Stock turns it orange.
-              Dispatch turns it green.
+              Processing stays black and white. Production turns the row blue. Stock checks clothes
+              on hand against the order, then turns the row orange. Dispatch turns it green.
             </p>
           </div>
           <div className="admin__actions">
@@ -166,21 +175,48 @@ function AdminOrders() {
                           <th>Size</th>
                           <th>Qty</th>
                           <th>Price</th>
+                          <th>Stock</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {order.lines.map((line) => (
-                          <tr key={line.id}>
-                            <td>{line.title}</td>
-                            <td>{line.color}</td>
-                            <td>{line.size}</td>
-                            <td>{line.qty}</td>
-                            <td>{line.priceExact}</td>
-                          </tr>
-                        ))}
+                        {order.lines.map((line) => {
+                          const check = (order.stockCheck?.lines || []).find(
+                            (row) => row.lineId === line.id
+                          );
+                          return (
+                            <tr key={line.id}>
+                              <td>{line.title}</td>
+                              <td>{line.color}</td>
+                              <td>{line.size}</td>
+                              <td>{line.qty}</td>
+                              <td>{line.priceExact}</td>
+                              <td>
+                                {!check && "—"}
+                                {check?.status === "matched" &&
+                                  `Matched (${check.available} on hand)`}
+                                {check?.status === "short" &&
+                                  `Short (${check.available} on hand)`}
+                                {check?.status === "unknown piece" && "Unknown piece"}
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
+                  {order.stockCheck && (
+                    <p
+                      className={
+                        order.stockCheck.reserved
+                          ? "admin-order__stock admin-order__stock--ok"
+                          : "admin-order__stock admin-order__stock--short"
+                      }
+                    >
+                      {order.stockCheck.reserved
+                        ? "Stock matched and reserved for this order."
+                        : "Stock does not match this order yet."}
+                    </p>
+                  )}
 
                   <footer className="admin-order__foot">
                     <button type="button" onClick={() => remove(order.id)}>

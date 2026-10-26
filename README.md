@@ -49,13 +49,23 @@ Connect the GitHub repo itself, not a public clone URL. Render only sees the Act
 - `/about` — the brand story, as its own page
 - `/contact` — studio contact details (also linked from the footer)
 - `/account` — sign in or create an account (JWT + bcrypt)
-- `/admin` — studio order list for admin accounts (Processing / Production / Stock / Dispatch)
+- `/admin` — studio order list for admin accounts (Processing / Production / Stock / Dispatch). Moving an order to Stock matches colour, size, and quantity against warehouse inventory and reserves the pieces.
 
 Anyone can browse and fill a bag. Checkout requires an account, and the order
 only places when every delivery field is complete.
 
-Default studio admin locally: `studio@cosinemade.com` / `cosine-studio`.
-Override with `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `JWT_SECRET` on Render.
+Seed test accounts (admin + customer):
+
+```bash
+backend/.venv/bin/python backend/seed.py
+```
+
+That prints login emails and passwords. Defaults:
+
+- Admin: `studio@cosinemade.com` / `StudioAdmin!`
+- Customer: `amina@example.com` / `Customer1!`
+
+Override admin with `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `JWT_SECRET` on Render.
 
 Routing is handled by `react-router-dom`. Because this is a client-side
 router, always run it through `npm run dev` or `npm run build` + `npm run

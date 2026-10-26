@@ -1737,6 +1737,16 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   text-transform: uppercase;
   opacity: 0.8;
 }
+.admin-order__stock {
+  margin-top: 12px;
+  font-size: 13px;
+}
+.admin-order__stock--ok {
+  opacity: 0.95;
+}
+.admin-order__stock--short {
+  font-weight: 600;
+}
 .admin-order__foot {
   margin-top: 14px;
   display: flex;

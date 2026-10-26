@@ -45,7 +45,7 @@ jobs:
           assert client.post("/api/checkout", json={}).status_code == 401
           login = client.post("/api/auth/login", json={
               "email": "studio@cosinemade.com",
-              "password": "cosine-studio",
+              "password": "StudioAdmin!",
           })
           assert login.status_code == 200
           token = login.get_json()["token"]
