@@ -128,16 +128,14 @@ p { line-height: 1.6; margin: 0 0 1em; color: rgba(0,0,0,0.72); }
   justify-self: center;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 15px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: var(--pearl);
+  line-height: 0;
 }
-.nav__wordmark .emblem { width: 30px; height: 30px; }
+.nav__wordmark-img {
+  display: block;
+  height: 18px;
+  width: auto;
+  max-width: min(220px, 42vw);
+}
 
 .nav__links {
   display: flex;

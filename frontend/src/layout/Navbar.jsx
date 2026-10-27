@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { MEN_TYPES, WOMEN_TYPES } from "@/content/images";
 import { useCart } from "@/features/bag/cart";
 import { useAuth } from "@/features/account/auth";
+import wordmark from "@/assets/cosine-wordmark.png";
 
 const LEFT = [
   { label: "Collections", to: "/collections" },
@@ -127,8 +128,8 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <Link to="/" className="nav__wordmark">
-          Cosine&nbsp;Made
+        <Link to="/" className="nav__wordmark" aria-label="Cosine Made">
+          <img src={wordmark} alt="Cosine Made" className="nav__wordmark-img" />
         </Link>
 
         <nav className="nav__links nav__links--right">

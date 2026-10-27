@@ -24,7 +24,7 @@ export default function ProductCard({ item }) {
         <span className="collection-card__shop">View</span>
       </div>
       <figcaption>
-        <span className="collection-card__brand">Cosine Made</span>
+        <span className="collection-card__brand">COSINE MADE</span>
         <span className="collection-card__title">{item.title}</span>
         <span className="collection-card__price">{item.priceLabel || item.price}</span>
       </figcaption>
