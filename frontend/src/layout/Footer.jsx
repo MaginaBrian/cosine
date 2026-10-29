@@ -43,7 +43,7 @@ export default function Footer() {
 
         <nav className="footer__links" aria-label="Site">
           <Link to="/contact">Contact</Link>
-          <a href="mailto:studio@cosinemade.com">Client services</a>
+          <Link to="/faq">Client services</Link>
           <Link to="/privacy">Legal notices</Link>
           <a href="https://instagram.com" target="_blank" rel="noreferrer">
             Social

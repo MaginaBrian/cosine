@@ -1,9 +1,10 @@
 # Cosine Made — Website
 
-A multi-page React + Vite site for Cosine Made — real routes for each
-section, built from the brand's creative brief (color system, typography
-direction, design principles) with layout cues from thebar.africa and
-fearofgod.com (fixed nav with category dropdowns, dedicated shop pages).
+A multi-page React + Vite shop for Cosine Made, with a Flask API for catalog,
+bag, accounts, and studio orders. Layout cues from Fear of God and Kith
+(fixed nav with frosted mega-menus, campaign look grids, short footer).
+
+The brand mark is the Marble wordmark (`frontend/src/assets/cosine-wordmark.png`).
 
 ## Run it
 
@@ -15,17 +16,16 @@ npm run api    # Flask shop API on http://127.0.0.1:5000
 npm run dev    # site on http://localhost:5173 (proxies /api to Flask)
 ```
 
-Then open the printed local URL (usually http://localhost:5173).
-The catalog and bag live in the Flask API, so both processes need to be running.
-
-To build for production:
+Open http://localhost:5173. Catalog and bag live in the Flask API, so both
+processes need to be running.
 
 ```bash
 npm run build
 npm run preview   # serve the production build locally
 ```
 
-Both commands run from the repo root and delegate to `frontend/`.
+Root `package.json` scripts (`dev`, `api`, `seed`, `build`, `lint`, `preview`)
+delegate to `frontend/` or `backend/.venv`.
 
 ## CI/CD (GitHub Actions → Render)
 
@@ -52,15 +52,17 @@ Workflows live in `.github/workflows/ci.yml` and `.github/workflows/deploy.yml`.
 
 ## Pages
 
-- `/` — Home: hero, marquee, Men/Women chooser, About teaser, Craft, Lookbook
-- `/men`, `/women`, `/kids` — full product grids, filterable by garment type
-  (the same types shown in the nav dropdown when you hover Men / Women / Kids)
-- `/featured` — a small curated pull across the catalog
-- `/collections` — the full catalog in one place with All / Men / Women tabs
-- `/about` — the brand story, as its own page
-- `/contact` — studio contact details (also linked from the footer)
+- `/` — Home: AXIS hero + look grid, Summer / Essentials campaigns, Shop by Colour, reviews, four pillars
+- `/collections`, `/featured`, `/men`, `/women` — shop grids (Men / Women filterable by garment type from the nav dropdown)
+- `/colour/:slug` — colour story looks + matching pieces
+- `/products/:id` — product detail
+- `/bag`, `/checkout` — bag and checkout (checkout requires an account)
 - `/account` — sign in or create an account (JWT + bcrypt)
-- `/admin` — studio order list for admin accounts (Processing / Production / Stock / Dispatch). Moving an order to Stock matches colour, size, and quantity against warehouse inventory and reserves the pieces.
+- `/admin` — studio order board for admin accounts only (Processing / Production / Stock / Dispatch). Moving an order to Stock matches colour, size, and quantity against warehouse inventory and reserves the pieces. Studio link appears in the footer only when signed in as admin.
+- `/insiders`, `/purpose`, `/product`, `/people` — studio story pages linked from the home pillars
+- `/about` — brand story lines
+- `/contact` — Fear of God–style message form (also linked from the footer)
+- `/privacy` — legal notices
 
 Anyone can browse and fill a bag. Checkout requires an account, and the order
 only places when every delivery field is complete.
@@ -68,51 +70,47 @@ only places when every delivery field is complete.
 Seed test accounts (admin + customer):
 
 ```bash
-backend/.venv/bin/python backend/seed.py
+npm run seed
+# or: backend/.venv/bin/python backend/seed.py
 ```
 
-That prints login emails and passwords. Defaults:
+Defaults:
 
 - Admin: `studio@cosinemade.com` / `StudioAdmin!`
 - Customer: `amina@example.com` / `Customer1!`
 
 Override admin with `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `JWT_SECRET` on Render.
 
-Routing is handled by `react-router-dom`. Because this is a client-side
-router, always run it through `npm run dev` or `npm run build` + `npm run
-preview` (or deploy behind a server with an SPA history fallback) — don't
-just open `dist/index.html` directly in the browser, or the sub-pages will
-404 on refresh.
+Routing uses `react-router-dom`. Always run through `npm run dev` or
+`npm run build` + `npm run preview` (or deploy with an SPA history fallback) —
+opening `dist/index.html` directly will 404 on refresh.
 
 ## Structure
 
-The repo is two modules. Root `package.json` only starts them.
-
-- `frontend/` — the Vite + React site
+- `frontend/` — Vite + React site
   - `src/app/` — shell and route table
-  - `src/layout/` — navbar, footer, emblem
-  - `src/features/home/` — homepage sections
-  - `src/features/catalog/` — shop grids and the catalog API client
-  - `src/features/product/` — the piece page
-  - `src/features/bag/` — bag page and cart client
-  - `src/features/studio/` — about and contact
-  - `src/content/images.js` — brand photography and the Men / Women / Kids type lists
-- `backend/shop/` — the Flask package
-  - `catalog.py` — products and `/api/products`
-  - `cart.py` — the session bag and `/api/cart`
-  - `app.py` — process entry that calls `create_app()`
+  - `src/layout/` — navbar (Marble wordmark), footer
+  - `src/features/home/` — hero, campaigns, Shop by Colour, reviews, pillars
+  - `src/features/catalog/` — shop grids, colour pages, catalog client
+  - `src/features/product/` — piece page
+  - `src/features/bag/`, `checkout/`, `account/`, `admin/` — commerce + studio
+  - `src/features/studio/` — about, contact, privacy, Insiders / Purpose / Product / People
+  - `src/content/images.js` — photography placeholders, colour stories, Men / Women types
+  - `src/assets/cosine-wordmark.png` — Marble brand mark
+- `backend/` — Flask package (`shop/`)
+  - `catalog.py`, `cart.py`, `auth.py`, `checkout.py`, `orders.py`, `inventory.py`
+  - `app.py` — process entry (`create_app()`); Render uses gunicorn
 
 ## Swapping in real photos & video
 
-All imagery currently comes from free Unsplash stock photos as placeholders,
-listed in `frontend/src/content/images.js`. To use your own:
+Imagery currently uses free Unsplash placeholders in
+`frontend/src/content/images.js`. To use your own:
 
-1. Drop your files in `frontend/src/assets/`.
-2. Import them at the top of `frontend/src/content/images.js`, e.g.
-   `import overcoat from "@/assets/overcoat.jpg";`
+1. Drop files in `frontend/src/assets/`.
+2. Import them at the top of `images.js`, e.g. `import overcoat from "@/assets/overcoat.jpg";`
 3. Use that variable instead of the `u("photo-...")` URL.
 
-For video, replace an `<img>` tag with:
+For video, replace an `<img>` with:
 
 ```jsx
 <video autoPlay muted loop playsInline>
@@ -120,20 +118,18 @@ For video, replace an `<img>` tag with:
 </video>
 ```
 
-The `Craft.jsx` hero media block on the homepage is a good first place to
-try this — the surrounding layout works with either an image or a video.
+The home hero or a `CampaignBlock` look grid is a good first place to try this.
 
 ## Brand tokens
 
-Defined as CSS variables at the top of `frontend/src/styles/index.css`:
+CSS variables at the top of `frontend/src/styles/index.css`:
 
 - `--pearl` #FDFFFF — primary background
 - `--silk` #EEE5D9 — secondary surfaces
-- `--marble` #E8E4E0 — cards / separation
+- `--marble` #E8E4E0 — cards / separation / wordmark tone
 - `--onyx` #000000 — text
 - `--velvet` #222D52 — accent
 - `--champagne` #D2B98A — secondary accent
 
-Typeface: **Switzer** (a free grotesk in the same family as Neue Haas
-Grotesk / Helvetica Now, which the brief calls for), loaded from Fontshare.
-# cosine
+Typeface stack prefers Neue Haas Grotesk / Helvetica Now, with **Switzer**
+(Fontshare) as the loaded fallback.

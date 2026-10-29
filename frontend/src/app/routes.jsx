@@ -14,6 +14,7 @@ import PurposePage from "@/features/studio/PurposePage";
 import ProductStoryPage from "@/features/studio/ProductStoryPage";
 import PeoplePage from "@/features/studio/PeoplePage";
 import ContactPage from "@/features/studio/ContactPage";
+import FaqPage from "@/features/studio/FaqPage";
 import PrivacyPage from "@/features/studio/PrivacyPage";
 import AdminPage from "@/features/admin/AdminPage";
 import AccountPage from "@/features/account/AccountPage";
@@ -45,6 +46,7 @@ export default function AppRoutes() {
       <Route path="/product" element={<ProductStoryPage />} />
       <Route path="/people" element={<PeoplePage />} />
       <Route path="/privacy" element={<PrivacyPage />} />
+      <Route path="/faq" element={<FaqPage />} />
       <Route path="/contact" element={<ContactPage />} />
       <Route
         path="/admin"
